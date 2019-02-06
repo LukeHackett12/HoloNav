@@ -1,6 +1,7 @@
 # HoloLens Project
 _Developed by Luke Hackett, Jack Engels, Jack Gilbride, Imalia Gonzalezova, Aaron Duggan, Alex Fields & Daniel Connaughton_
 ## Developer Requirements
+
 * 64 Bit Windows 10 Pro, Education or Enterprise
 * Unity Version 2018.3.4f
 * Visual Studio 2017
@@ -8,4 +9,4 @@ _Developed by Luke Hackett, Jack Engels, Jack Gilbride, Imalia Gonzalezova, Aaro
 * [Mixed Reality ToolKit for Unity Version 2018.9.l0 vNext Beta](https://github.com/Microsoft/MixedRealityToolkit-Unity/releases/tag/2018.9.0-Beta)
 
 ## Test Requirements
-* TBC
+* TBC 
