@@ -3,5 +3,5 @@
 )
 
 cd $project/UWP; 
-nuget restore TravisTest.sln; 
-msbuild.exe TravisTest.sln /t:Build /p:Configuration=Debug /p:Platform=x86 /verbosity:d
+nuget restore $project.sln; 
+msbuild.exe $project.sln /t:Build /p:Configuration=Debug /p:Platform=x86 /verbosity:d
