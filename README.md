@@ -10,3 +10,23 @@ _Developed by Luke Hackett, Jack Engels, Jack Gilbride, Imalia Gonzalezova, Aaro
 
 ## Test Requirements
 * TBC 
+
+## How to get setup
+
+* Clone Repository on Machine.
+* Open Hololens-Nav Project in Unity
+* Go to Window -> Package Manager
+* Install Windows Mixed Toolkit and Open VR
+* Go to File -> Build Settings
+* Click on Universal Windows Platform
+* Select Target Device as 'Hololens' and Platform as 'x86'
+* If there is a 'Switch Platform' button click it to confirm Platform
+* Click on the 'Build' button at the bottom of the page
+and select 'Hololens-Nav/UWP/' as the build directory.
+* At this stage after the build completes there should be a Mixed Reality Toolkit
+editor tab, select this and open the build menu.
+* Build the Unity Project followed by the AppX project in this Window
+* If you open the 'Hololens-Nav.sln' in the Build directory 'Hololens-Nav/UWP' you
+should be able to run this project on your emulator.
+
+
