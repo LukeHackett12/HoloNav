@@ -31,4 +31,6 @@ editor tab, select this and open the build menu.
 * If you open the 'Hololens-Nav.sln' in the Build directory 'Hololens-Nav/UWP' you
 should be able to run this project on your emulator.
 
+## Jenkins link
 
+[jenkins](http://37.228.204.28:8080)
