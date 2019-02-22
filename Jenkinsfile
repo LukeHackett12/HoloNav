@@ -1,7 +1,6 @@
 node {
     try {
     	stage ('Checkout'){
-    		cleanWs()
     		checkout scm
     	}	
     
@@ -15,9 +14,11 @@ node {
     	
     	stage ('Upload to S3'){
     		powershell './deployS3.ps1'
+            cleanWs()
     	}
-    
+        
     	notifySuccessful()
+
 
     } catch (e) {
         currentBuild.result = "FAILED"
