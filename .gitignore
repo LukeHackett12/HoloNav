@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 [Ll]og/
+[Ll]ogs/
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -11,6 +12,8 @@ x86/
 Assets/AssetStoreTools*
 UWP/
 
+Packages/
+ProjectSettings/
 
 # Visual Studio cache directory
 .vs/
