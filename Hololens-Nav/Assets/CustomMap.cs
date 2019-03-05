@@ -125,7 +125,7 @@ public class CustomMap : MonoBehaviour
     {
         Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
 
-        Vector2d coords = convertLatLongToSlippy(53.2688178, -6.1988362, zoom);
+        Vector2d coords = convertLatLongToSlippy(53.2688178,-6.1966475, zoom);
 
         string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, (int)coords.x, (int)coords.y, "png", mapStyle, token);
         Debug.Log("url " + uri);
