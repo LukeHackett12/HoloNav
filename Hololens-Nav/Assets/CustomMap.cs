@@ -13,12 +13,28 @@ using UnityEditor;
 public class CustomMap : MonoBehaviour
 {
     [SerializeField]
-    RawImage raw;
+    Camera mapCamera;
 
     [SerializeField]
     LocationProviderFactory locationProvider;
     [SerializeField]
     GameObject plane;
+    [SerializeField]
+    GameObject plane1;
+    [SerializeField]
+    GameObject plane2;
+    [SerializeField]
+    GameObject plane3;
+    [SerializeField]
+    GameObject plane4;
+    [SerializeField]
+    GameObject plane5;
+    [SerializeField]
+    GameObject plane6;
+    [SerializeField]
+    GameObject plane7;
+    [SerializeField]
+    GameObject plane8;
 
     [SerializeField]
     string mapType;
@@ -29,7 +45,8 @@ public class CustomMap : MonoBehaviour
     [SerializeField]
     string token;
 
-    private Texture myTexture;
+    private Texture[][] textures;
+    private bool _isFirst;
 
     // Start is called before the first frame update
     void Awake()
@@ -41,20 +58,13 @@ public class CustomMap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         /*
         plane.texture = myTexture;
         if (playerChangedTile())
         {
             ChangeTextures();
         }
-        movePlayer();
         */
-    }
-
-    private void movePlayer()
-    {
-        throw new NotImplementedException();
     }
 
     private bool playerChangedTile()
@@ -66,18 +76,63 @@ public class CustomMap : MonoBehaviour
     {
         GetTextures();
         placeTextures();
+        MovePlayer();
+
+        if (_isFirst)
+        {
+            mapCamera.GetComponent<PinMovement>().enabled = true;
+        }
+    }
+
+    private void MovePlayer()
+    {
+        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
+        location = convertLatLongToSlippy(location.x, location.y, zoom);
+        Vector2d truncated = new Vector2d((location.x - Math.Truncate(location.x)), (location.y - Math.Truncate(location.y)));
+        truncated = new Vector2d(truncated.x * 128, truncated.y * 128);
+
+        mapCamera.transform.localPosition = new Vector3(-(float)truncated.x, mapCamera.transform.localPosition.y, (float)truncated.y);
+    }
+
+    void GetTextures()
+    {
+        textures = new Texture[3][];
+        for (int i = 0; i < textures.Length; i++)
+        {
+            textures[i] = new Texture[3];
+        }
+
+        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
+
+        Vector2d coords = convertLatLongToSlippy(location.x, location.y, zoom);
+
+        Vector2 startCoords = new Vector2((int)coords.x + 1, (int)coords.y + 1);
+
+        for (int i = 0; i < textures.Length; i++)
+        {
+            for(int j = 0; j < textures.Length; j++)
+            {
+                string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, startCoords.x-j, startCoords.y-i, "png", mapStyle, token);
+                Debug.Log("url " + uri);
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                StreamReader reader = new StreamReader(response.GetResponseStream());
+
+                Texture2D tex = new Texture2D(256, 256);
+                tex.name = (startCoords.x - j) + ":" + (startCoords.y - i);
+                tex.LoadImage(ReadFully(response.GetResponseStream()));
+
+                textures[i][j] = tex;
+            }
+        }
     }
 
     private void placeTextures()
     {
-        Material mat = new Material(Shader.Find("Diffuse"));
-        mat.mainTexture = myTexture;
-        plane.GetComponent<Renderer>().material = mat;
-
-        /*
-        for(int i = 0; i < textures.Length; i++)
+        for (int i = 0; i < textures.Length; i++)
         {
-            for(int j = 0; j < textures[i].Length; j++)
+            for (int j = 0; j < textures[i].Length; j++)
             {
                 // - Plane is at ((i-1)*(256)-128) x and ((j-1)*(256)-128) y pos 
                 // - Plane size is 256*256
@@ -118,60 +173,6 @@ public class CustomMap : MonoBehaviour
                 }
             }
         }
-        */
-    }
-
-    void GetTextures()
-    {
-        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
-
-        Vector2d coords = convertLatLongToSlippy(53.2688178,-6.1966475, zoom);
-
-        string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, (int)coords.x, (int)coords.y, "png", mapStyle, token);
-        Debug.Log("url " + uri);
-
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        StreamReader reader = new StreamReader(response.GetResponseStream());
-
-        Texture2D tex = new Texture2D(256, 256);
-        tex.LoadImage(ReadFully(response.GetResponseStream()));
-
-        myTexture = tex;
-
-        /*
-        Texture[][] textures = new Texture[3][];
-        for (int i = 0; i < textures.Length; i++)
-        {
-            textures[i] = new Texture[3];
-        }
-
-        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
-
-        Vector2d coords = convertLatLongToSlippy(53.2688178, -6.1988362, zoom);
-
-        Vector2 startCoords = new Vector2((int)coords.x - 1, (int)coords.y + 1);
-
-        for (int i = 0; i < textures.Length; i++)
-        {
-            for(int j = 0; j < textures.Length; j++)
-            {
-                string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, startCoords.x+i, startCoords.y-j, "png", mapStyle, token);
-                Debug.Log("url " + uri);
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-
-                Texture2D tex = new Texture2D(256, 256);
-                tex.LoadImage(ReadFully(response.GetResponseStream()));
-
-                textures[i][j] = tex;
-            }
-        }
-
-        return textures;
-        */
     }
 
     private Vector2d convertLatLongToSlippy(double latitude, double longitude, float zoom)
