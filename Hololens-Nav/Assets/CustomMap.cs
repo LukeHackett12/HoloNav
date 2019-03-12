@@ -2,203 +2,221 @@
 using System.Collections.Generic;
 using System.Net;
 using System;
+using System.Linq;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
 using Mapbox.Unity.Location;
+using Assets.Scripts;
 using Mapbox.Utils;
-using UnityEditor;
 
-public class CustomMap : MonoBehaviour
+namespace Assets.Scripts
 {
-    [SerializeField]
-    Camera mapCamera;
 
-    [SerializeField]
-    LocationProviderFactory locationProvider;
-    [SerializeField]
-    GameObject plane;
-    [SerializeField]
-    GameObject plane1;
-    [SerializeField]
-    GameObject plane2;
-    [SerializeField]
-    GameObject plane3;
-    [SerializeField]
-    GameObject plane4;
-    [SerializeField]
-    GameObject plane5;
-    [SerializeField]
-    GameObject plane6;
-    [SerializeField]
-    GameObject plane7;
-    [SerializeField]
-    GameObject plane8;
-
-    [SerializeField]
-    string mapType;
-    [SerializeField]
-    string mapStyle;
-    [SerializeField]
-    float zoom;
-    [SerializeField]
-    string token;
-
-    private Texture[][] textures;
-    private bool _isFirst;
-
-    // Start is called before the first frame update
-    void Awake()
+    public class CustomMap : MonoBehaviour
     {
-        InvokeRepeating("ChangeTextures", 2.0f, 5.0f);
-        //StartCoroutine(GetTexture());
-    }
+        public GameObject planes;
 
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        plane.texture = myTexture;
-        if (playerChangedTile())
+        string mapType = "mapbox.mapbox-traffic-v1";
+        string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
+        float zoom = 15;
+        string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
+
+        public HashSet<Tile> GetTextures(Node[] Nodes)
         {
-            ChangeTextures();
-        }
-        */
-    }
+            ArrayList textures = new ArrayList();
+            ArrayList usedCoords = new ArrayList();
+            HashSet<Tile> tiles = new HashSet<Tile>();
 
-    private bool playerChangedTile()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void ChangeTextures()
-    {
-        GetTextures();
-        placeTextures();
-        MovePlayer();
-
-        if (_isFirst)
-        {
-            mapCamera.GetComponent<PinMovement>().enabled = true;
-        }
-    }
-
-    private void MovePlayer()
-    {
-        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
-        location = convertLatLongToSlippy(location.x, location.y, zoom);
-        Vector2d truncated = new Vector2d((location.x - Math.Truncate(location.x)), (location.y - Math.Truncate(location.y)));
-        truncated = new Vector2d(truncated.x * 128, truncated.y * 128);
-
-        mapCamera.transform.localPosition = new Vector3(-(float)truncated.x, mapCamera.transform.localPosition.y, (float)truncated.y);
-    }
-
-    void GetTextures()
-    {
-        textures = new Texture[3][];
-        for (int i = 0; i < textures.Length; i++)
-        {
-            textures[i] = new Texture[3];
-        }
-
-        Vector2d location = locationProvider.DefaultLocationProvider.CurrentLocation.LatitudeLongitude;
-
-        Vector2d coords = convertLatLongToSlippy(location.x, location.y, zoom);
-
-        Vector2 startCoords = new Vector2((int)coords.x + 1, (int)coords.y + 1);
-
-        for (int i = 0; i < textures.Length; i++)
-        {
-            for(int j = 0; j < textures.Length; j++)
+            int xOffset = 0;
+            int yOffset = 0;
+            for (int i = 0; i < Nodes.Length; i++)
             {
-                string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, startCoords.x-j, startCoords.y-i, "png", mapStyle, token);
-                Debug.Log("url " + uri);
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-
-                Texture2D tex = new Texture2D(256, 256);
-                tex.name = (startCoords.x - j) + ":" + (startCoords.y - i);
-                tex.LoadImage(ReadFully(response.GetResponseStream()));
-
-                textures[i][j] = tex;
-            }
-        }
-    }
-
-    private void placeTextures()
-    {
-        for (int i = 0; i < textures.Length; i++)
-        {
-            for (int j = 0; j < textures[i].Length; j++)
-            {
-                // - Plane is at ((i-1)*(256)-128) x and ((j-1)*(256)-128) y pos 
-                // - Plane size is 256*256
-                int singleIndex = (i * textures.Length) + j;
-
-                Material mat = new Material(Shader.Find("Diffuse"));
-                mat.mainTexture = textures[i][j];
-
-                switch (singleIndex)
+                Node n = Nodes[i];
+                Vector2d coords = convertLatLongToSlippy(n.latLong.x, n.latLong.y, zoom);
+                if (!coordsContained(usedCoords, coords))
                 {
-                    case 0:
-                        plane.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 1:
-                        plane1.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 2:
-                        plane2.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 3:
-                        plane3.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 4:
-                        plane4.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 5:
-                        plane5.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 6:
-                        plane6.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 7:
-                        plane7.GetComponent<MeshRenderer>().material = mat;
-                        break;
-                    case 8:
-                        plane8.GetComponent<MeshRenderer>().material = mat;
-                        break;
+                    Texture tex = (GetTileTex((int)coords.x, (int)coords.y));
+
+                    if (textures.Count == 0)
+                    {
+                        tiles.Add(new Tile(tex, new Vector3(0, 0, 0)));
+                    }
+                    else
+                    {
+                        //Get direction of tile in relation to last
+                        Vector2 dir = getDir(tex.name, ((Texture)textures[textures.Count-1]).name);
+                        tiles.Add(new Tile(tex, new Vector3((dir.y*256) + yOffset, 0, (dir.x*256) + xOffset)));
+                        xOffset += (int)(256 * dir.x);
+                        yOffset += (int)(256 * dir.y);
+                    }
+
+                    textures.Add(tex);
+                }
+
+                usedCoords.Add(coords);
+            }
+
+            /*
+            Vector2[] vectors = {new Vector2(-1, -1),
+                new Vector2(0, -1) ,
+                new Vector2(1, -1) ,
+                new Vector2(-1, 0) ,
+                new Vector2(1, 0) ,
+                new Vector2(-1, 1) ,
+                new Vector2(0, 1) ,
+                new Vector2(1, 1) };
+
+            HashSet<Tile> borders = new HashSet<Tile>();
+            foreach (Tile tile in tiles)
+            {
+                foreach (Vector2 vector in vectors)
+                {
+                    Vector2d offset = new Vector2d(int.Parse(tile.texture.name.Split(':')[0]) + vector.x, int.Parse(tile.texture.name.Split(':')[1]) + vector.y);
+
+                    if (!coordsContained(usedCoords, offset))
+                    {
+                        Texture tex = (GetTileTex((int)offset.x, (int)offset.y));
+                        borders.Add(new Tile(tex, new Vector3(tile.relativeLocation.x + (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256))));
+                    }
                 }
             }
+
+            tiles.UnionWith(borders);
+            */
+            return tiles;
         }
-    }
+        
 
-    private Vector2d convertLatLongToSlippy(double latitude, double longitude, float zoom)
-    {
-        double n = Math.Pow(2, zoom);
-        double latitudeRad = (Math.PI / 180) * latitude;
-        Debug.Log("Lat rad " + latitudeRad);
-        double xTile = (longitude + 180.0) / 360.0 * n;
-        double yTile = (1.0 - Math.Log(Math.Tan(latitudeRad) + (1 / Math.Cos(latitudeRad))) / Math.PI) / 2.0 * n;
-
-        Vector2d vector = new Vector2d(xTile, yTile);
-        Debug.Log("Vector " + vector);
-        return vector;
-    }
-
-    public byte[] ReadFully(Stream input)
-    {
-        byte[] buffer = new byte[16 * 1024];
-        using (MemoryStream ms = new MemoryStream())
+        private Vector2 getDir(string name, string lastName)
         {
-            int read;
-            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            int newX = int.Parse(name.Split(':')[0]);
+            int newY = int.Parse(name.Split(':')[1]);
+
+            int oldX = int.Parse(lastName.Split(':')[0]);
+            int oldY = int.Parse(lastName.Split(':')[1]);
+
+            return (new Vector2(newX - oldX, oldY - newY));
+        }
+
+        public  void placeLocationPin(String polyline, GameObject pin)
+        {
+            //Place astronaut at start and keep updated location with InvokeRepeating
+            Vector2d startCoords = GetWorldSpaceOfLatLong(PolylineUtils.Decode(polyline)[0]);
+
+            pin.transform.SetParent(planes.transform);
+            pin.transform.localPosition = new Vector3((float)startCoords.x, 0, (float)startCoords.y);
+        }
+
+        private Vector2d GetWorldSpaceOfLatLong(Vector2d vector2d)
+        {
+            Vector2d coords = convertLatLongToSlippy(vector2d.x, vector2d.y, zoom);
+            coords = new Vector2d(coords.x - Math.Truncate(coords.x), coords.y - Math.Truncate(coords.y));
+
+            coords *= 256;
+            return coords;
+        }
+
+        private bool coordsContained(ArrayList textures, Vector2d name)
+        {
+            foreach (Vector2d tex in textures)
             {
-                ms.Write(buffer, 0, read);
+                if ((int)tex.x == (int)name.x && (int)tex.y == (int)name.y) return true;
             }
-            return ms.ToArray();
+
+            return false;
+        }
+
+        public Texture GetTileTex(int x, int y)
+        {
+            string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, x, y, "png", mapStyle, token);
+            Debug.Log("url " + uri);
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+
+            Texture2D tex = new Texture2D(256, 256);
+            tex.name = (x) + ":" + (y);
+            tex.LoadImage(ReadFully(response.GetResponseStream()));
+
+            return tex;
+        }
+
+        public void PlaceTextures(HashSet<Tile> tiles)
+        {
+            List<Tile> tilesList = tiles.ToList();
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                GameObject plane = new GameObject();
+                plane.name = tilesList[i].texture.name;
+                plane.transform.SetParent(planes.transform);
+                plane.transform.localPosition = tilesList[i].relativeLocation;
+                plane.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                plane.layer = 9;
+                plane.transform.localScale = new Vector3(4.92f, 4.92f, 1);
+
+                MeshFilter meshFilter = (MeshFilter)plane.AddComponent(typeof(MeshFilter));
+                meshFilter.mesh = CreateMesh(26, 26);
+                MeshRenderer renderer = plane.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
+                renderer.material.shader = Shader.Find("Diffuse");
+
+                Texture2D tex = (Texture2D)tilesList[i].texture;
+                tex.Apply();
+                renderer.material.mainTexture = tex;
+                renderer.material.color = Color.white;
+            }
+        }
+
+        Mesh CreateMesh(float width, float height)
+        {
+            Mesh m = new Mesh();
+            m.name = "ScriptedMesh";
+            m.vertices = new Vector3[] {
+            new Vector3(-width, -height, 0.01f),
+            new Vector3(width, -height, 0.01f),
+            new Vector3(width, height, 0.01f),
+            new Vector3(-width, height, 0.01f)
+            };
+
+            m.uv = new Vector2[] {
+            new Vector2 (0, 0),
+            new Vector2 (0, 1),
+            new Vector2(1, 1),
+            new Vector2 (1, 0)
+            };
+
+            m.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+            m.RecalculateNormals();
+
+            return m;
+        }
+
+        private Vector2d convertLatLongToSlippy(double latitude, double longitude, float zoom)
+        {
+            double n = Math.Pow(2, zoom);
+            double latitudeRad = (Math.PI / 180) * latitude;
+            Debug.Log("Lat rad " + latitudeRad);
+            double xTile = (longitude + 180.0) / 360.0 * n;
+            double yTile = (1.0 - Math.Log(Math.Tan(latitudeRad) + (1 / Math.Cos(latitudeRad))) / Math.PI) / 2.0 * n;
+
+            Vector2d vector = new Vector2d(xTile, yTile);
+            Debug.Log("Vector " + vector);
+            return vector;
+        }
+
+        public byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
     }
 }

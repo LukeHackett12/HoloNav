@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mapbox.Utils;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-class Node : MonoBehaviour
+public class Node : MonoBehaviour
 {
     /* eg 
      * 
@@ -15,6 +16,8 @@ class Node : MonoBehaviour
 
     public Node prev;
     public Vector3 position;
+
+    public Vector2d latLong;
 
     public Node(Node prevIn, Vector3 positionIn)
     {

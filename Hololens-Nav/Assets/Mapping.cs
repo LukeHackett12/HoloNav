@@ -13,11 +13,17 @@ namespace Assets.Scripts
         private string polyline;
 
         public int polylineOption;
+        public GameObject planes;
+        public GameObject pin;
+
+        private CustomMap map;
 
         void Awake()
         {
 
             edges = new List<Edge>();
+            map = new CustomMap();
+            map.planes = planes;
             //int polylineOption = SceneVars.destinationOption;
 
             switch (polylineOption)
@@ -49,13 +55,18 @@ namespace Assets.Scripts
                 index++;
             }
 
-            Node[] nodes = nodes = generateNodes(vectors);
+            Node[] nodes = nodes = generateNodes(vectors, PolylineUtils.Decode(polyline));
 
             generateEdges(nodes);
             drawEdges(edges);
+
+            HashSet<Tile> tiles = map.GetTextures(nodes);
+            map.PlaceTextures(tiles);
+
+            map.placeLocationPin(polyline, pin);
         }
 
-        Node[] generateNodes(Vector2[] points)
+        Node[] generateNodes(Vector2[] points, List<Vector2d> polyline)
         {
             Node[] nodes = new Node[points.Length];
             for (int i = 0; i < points.Length; i++)
@@ -69,6 +80,7 @@ namespace Assets.Scripts
                 }
 
                 node.position = new Vector3(points[i].x, -1, points[i].y);
+                node.latLong = polyline[i];
                 nodes[i] = node;
             }
 
