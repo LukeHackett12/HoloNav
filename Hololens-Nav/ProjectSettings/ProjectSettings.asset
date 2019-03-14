@@ -546,7 +546,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Template_3D
-  metroPackageVersion: 1.0.7.0
+  metroPackageVersion: 1.0.9.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
