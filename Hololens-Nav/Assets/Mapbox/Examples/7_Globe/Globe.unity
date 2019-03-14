@@ -1008,10 +1008,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 317bc9bc5eac57249b5ac1682fe8048f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Responses:
-  - Hello. Say destination followed by your desired destination to begin your route.
-  - 'Your chosen destination is '
-  - You have reached your final destination
 --- !u!1001 &1291380683
 PrefabInstance:
   m_ObjectHideFlags: 0

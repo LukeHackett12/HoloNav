@@ -32,19 +32,15 @@ public class SpeechInput : MonoBehaviour
     int userInputLength;
     string userInputStr;
 
-    public string[] Responses = new string[]
-    {
-       "Say  find route  followed by your desired destination " +
-           "to begin your route.",
-        "Your chosen destination is ",
-        "You have reached your final destination",
-        "Couldn't find your chosen destination"
-    };
+
 
 
     void Start()
     {
-        Go(Responses[0]);
+        Go("Say find route followed by your desired destination " + 
+            "to begin your route");
+
+
         userInputArr = new string[20];
         _geocoder = MapboxAccess.Instance.Geocoder;
         //Initialize Dictation Recognizer to listen for destination input
@@ -102,8 +98,8 @@ public class SpeechInput : MonoBehaviour
         Debug.Log("Stopped listening to you");
         userInputStr = string.Join(" ", userInputArr);
         Debug.Log("Full address: " + userInputStr);
-        string StrToSend = Responses[1] + userInputStr;
-        Debug.Log(StrToSend);
+        string StrToSend = "Your chosen destination is" + userInputStr;
+        Debug.Log("String to send" + StrToSend);
         Go(StrToSend);
         HandleUserInput(userInputStr);
         PhraseRecognitionSystem.Restart();
@@ -155,7 +151,7 @@ public class SpeechInput : MonoBehaviour
         if (null == res)
         {
             Debug.Log("Did not find Destination Longitude and Latitude");
-            Go(Responses[3]);
+            Go("Did not find Destination Longitude and Latitude");
         }
         else if (null != res.Features && res.Features.Count > 0)
         {
@@ -172,6 +168,7 @@ public class SpeechInput : MonoBehaviour
     }
 
 
+    //Authenticates access token
     public class Authentication
     {
         private string AccessUri;
@@ -424,6 +421,7 @@ public class SpeechInput : MonoBehaviour
                     {
                         if (responseMessage.IsCompleted && responseMessage.Result != null && responseMessage.Result.IsSuccessStatusCode)
                         {
+                            Debug.Log("Response message: " + responseMessage);
                             var httpStream = await responseMessage.Result.Content.ReadAsStreamAsync().ConfigureAwait(false);
                             this.AudioAvailable(new GenericEventArgs<Stream>(httpStream));
                         }
@@ -622,15 +620,12 @@ public class SpeechInput : MonoBehaviour
         // For SoundPlayer to be able to play the wav file, it has to be encoded in PCM.
         // Use output audio format AudioOutputFormat.Riff16Khz16BitMonoPcm to do that.
         SoundPlayer player = new SoundPlayer(args.EventData);
+        Debug.Log("Event data yes " + args.EventData);
         player.PlaySync();
         args.EventData.Dispose();
     }
 
-    /// <summary>
-    /// Handler an error when a TTS request failed.
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="GenericEventArgs{Exception}"/> instance containing the event data.</param>
+   //TTS request failure handler
     private static void ErrorHandler(object sender, GenericEventArgs<Exception> e)
     {
         Debug.Log("Unable to complete the TTS request: [{0}]");
@@ -650,7 +645,7 @@ public class SpeechInput : MonoBehaviour
         // Unified Speech Service key
         // Free: https://azure.microsoft.com/en-us/try/cognitive-services/?api=speech-services
         // Paid: https://go.microsoft.com/fwlink/?LinkId=872236&clcid=0x409 
-        Authentication auth = new Authentication("https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issueToken", "30194c54c29b43ee8ef9ddb63b613985");
+        Authentication auth = new Authentication("https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issueToken", "9da174076787461dad1cee019f6fb3e7");
 
         try
         {
@@ -671,8 +666,7 @@ public class SpeechInput : MonoBehaviour
 
         cortana.OnAudioAvailable += PlayAudio;
         cortana.OnError += ErrorHandler;
-        string textToSay = "Your chosen destination is " + userInput;
-        Debug.Log(userInput);
+        Debug.Log("User Input: " + userInput);
         // Reuse Synthesize object to minimize latency
         cortana.Speak(CancellationToken.None, new Synthesize.InputOptions()
         {
