@@ -18,14 +18,24 @@ namespace Assets.Scripts
 
         string mapType = "mapbox.satellite";
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
-        float zoom = 15;
+        float zoom = 17;
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
         public HashSet<Tile> GetTextures(Node[] Nodes)
         {
             ArrayList textures = new ArrayList();
             ArrayList usedCoords = new ArrayList();
-            HashSet<Tile> tiles = new HashSet<Tile>();
+            HashSet<Tile> tiles = new HashSet<Tile>(new TileComparer());
+
+            Vector2[] vectors = {
+                new Vector2(-1, -1),
+                new Vector2(0, -1) ,
+                new Vector2(1, -1) ,
+                new Vector2(-1, 0) ,
+                new Vector2(1, 0) ,
+                new Vector2(-1, 1) ,
+                new Vector2(0, 1) ,
+                new Vector2(1, 1) };
 
             int xOffset = 0;
             int yOffset = 0;
@@ -39,50 +49,38 @@ namespace Assets.Scripts
 
                     if (textures.Count == 0)
                     {
-                        tiles.Add(new Tile(tex, new Vector3(0, 0, 0)));
+                        Tile tile = new Tile(tex, new Vector3(0, 0, 0));
+                        tiles.Add(tile);
+
+                        foreach (Vector2 vector in vectors)
+                        {
+                            Vector3 pos = new Vector3(tile.relativeLocation.x - (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256));
+                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x));
+                            tiles.Add(new Tile(surround, pos));
+                        }
                     }
                     else
                     {
                         //Get direction of tile in relation to last
                         Vector2 dir = getDir(tex.name, ((Texture)textures[textures.Count-1]).name);
-                        tiles.Add(new Tile(tex, new Vector3((dir.y*256) + yOffset, 0, (dir.x*256) + xOffset)));
+                        Tile tile = new Tile(tex, new Vector3((dir.y * 256) + yOffset, 0, (dir.x * 256) + xOffset));
+                        tiles.Add(tile);
+
+                        foreach (Vector2 vector in vectors)
+                        {
+                            Vector3 pos = new Vector3(tile.relativeLocation.x - (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256));
+                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x));
+                            tiles.Add(new Tile(surround, pos));
+                        }
+
                         xOffset += (int)(256 * dir.x);
                         yOffset += (int)(256 * dir.y);
                     }
-
                     textures.Add(tex);
                 }
 
                 usedCoords.Add(coords);
             }
-
-            /*
-            Vector2[] vectors = {new Vector2(-1, -1),
-                new Vector2(0, -1) ,
-                new Vector2(1, -1) ,
-                new Vector2(-1, 0) ,
-                new Vector2(1, 0) ,
-                new Vector2(-1, 1) ,
-                new Vector2(0, 1) ,
-                new Vector2(1, 1) };
-
-            HashSet<Tile> borders = new HashSet<Tile>();
-            foreach (Tile tile in tiles)
-            {
-                foreach (Vector2 vector in vectors)
-                {
-                    Vector2d offset = new Vector2d(int.Parse(tile.texture.name.Split(':')[0]) + vector.x, int.Parse(tile.texture.name.Split(':')[1]) + vector.y);
-
-                    if (!coordsContained(usedCoords, offset))
-                    {
-                        Texture tex = (GetTileTex((int)offset.x, (int)offset.y));
-                        borders.Add(new Tile(tex, new Vector3(tile.relativeLocation.x + (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256))));
-                    }
-                }
-            }
-
-            tiles.UnionWith(borders);
-            */
 
             return tiles;
         }
