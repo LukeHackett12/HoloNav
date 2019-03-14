@@ -92,7 +92,6 @@ public class SpeechInput : MonoBehaviour
     {
         Debug.Log("Heard: " + text);
         userInputArr[userInputLength] = text;
-        // TextToSpeech speech = new TextToSpeech(text);
     }
 
 
@@ -135,6 +134,7 @@ public class SpeechInput : MonoBehaviour
 
     public event Action<ForwardGeocodeResponse> OnGeocoderResponse = delegate { };
 
+    //Forwards the user input string to Mapbox api
     void HandleUserInput(string searchString)
     {
         _hasResponse = false;
@@ -147,6 +147,8 @@ public class SpeechInput : MonoBehaviour
         }
     }
 
+    //Handles Mapbox API response for long/lat search 
+    //Returns long/lat co-ordinates 
     void HandleGeocoderResponse(ForwardGeocodeResponse res)
     {
         _hasResponse = true;
@@ -163,6 +165,7 @@ public class SpeechInput : MonoBehaviour
             Debug.Log("These are the returned co-ordinates:");
             Debug.Log(_coordinate);
             System.Diagnostics.Debug.Write(_coordinate);
+            Go(_coordinate.ToString());
         }
         Response = res;
         OnGeocoderResponse(res);
@@ -675,7 +678,7 @@ public class SpeechInput : MonoBehaviour
         {
             RequestUri = new Uri(requestUri),
             // Text to be spoken.
-            Text = textToSay,
+            Text = userInput,
             VoiceType = Gender.Female,
 
             Locale = "en-US",
