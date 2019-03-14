@@ -16,9 +16,9 @@ variables:
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\'
 
 steps:
-- script: |
-      pwsh -c '.\unityBuild.ps1'
+    - powershell: |
+        .\unityBuild.ps1 -Verbose
       displayName: 'Unity Build'
-- script: |
-      pwsh -c '.\AppXBuild.ps1'
-      displayName: 'Unity Build'
+    - powershell: |
+        .\AppXBuild.ps1
+      displayName: 'AppX Build'
