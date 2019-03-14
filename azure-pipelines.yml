@@ -16,15 +16,9 @@ variables:
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\'
 
 steps:
-- task: NuGetToolInstaller@0
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    platform: 'x86'
-    solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+- script: |
+      pwsh -c '.\unityBuild.ps1'
+      displayName: 'Unity Build'
+- script: |
+      pwsh -c '.\AppXBuild.ps1'
+      displayName: 'Unity Build'
