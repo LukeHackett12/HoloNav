@@ -13,15 +13,24 @@ public class API : MonoBehaviour
     public void request()
     {
 
-        WWW request = new WWW(URL + destination+ "?access_token=" + API_KEY);
+        WWW request = new WWW(URL + destination+ "?" + "steps=true&banner_instructions=true" + "&access_token=" + API_KEY);
         StartCoroutine(OnResponse(request));
     }
 
     private IEnumerator OnResponse(WWW req)
     {
         yield return req;
-
-        responseText.text = req.text;
+        routeObject route = new routeObject();
+        route = JsonUtility.FromJson<routeObject>(req.text);
+        string text = "";
+        if (route.routes != null)
+        {
+            foreach(route currentRoute in route.routes)
+            {
+                text += currentRoute.geometry + " " + currentRoute.weight_name + " " + currentRoute.weight + "\n";
+            }
+            responseText.text = text;
+        }
     }
 
     public void Text_Changed(string newText)
