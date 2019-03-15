@@ -61,15 +61,13 @@ namespace Assets.Scripts
             generateEdges(nodes);
             drawEdges(edges);
 
-            //mapCamera.GetComponent<PinMovement>().enabled = false;
-
             HashSet<Tile> tiles = map.GetTextures(nodes);
             map.PlaceTextures(tiles);
 
-            //pin.GetComponent<ZoomMovement>().enabled = false;
+            pin.GetComponent<ZoomMovement>().enabled = false;
             map.placeLocationPin(polyline, pin);
-            //pin.GetComponent<ZoomMovement>().loc = pin.transform.localPosition;
-            //pin.GetComponent<ZoomMovement>().enabled = true;
+            pin.GetComponent<ZoomMovement>().loc = pin.transform.localPosition;
+            pin.GetComponent<ZoomMovement>().enabled = true;
 
 
             //mapCamera.GetComponent<PinMovement>().enabled = true;

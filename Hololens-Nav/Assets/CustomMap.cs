@@ -16,9 +16,9 @@ namespace Assets.Scripts
     {
         public GameObject planes;
 
-        string mapType = "mapbox.satellite";
+        string mapType = "mapbox.mapbox-traffic-v1";
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
-        float zoom = 17;
+        float zoom = 15;
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
         public HashSet<Tile> GetTextures(Node[] Nodes)
@@ -154,7 +154,7 @@ namespace Assets.Scripts
                 plane.transform.localPosition = tilesList[i].relativeLocation;
                 plane.transform.localRotation = Quaternion.Euler(90, 0, 0);
                 plane.layer = 9;
-                plane.transform.localScale = new Vector3(4.92f, 4.92f, 1);
+                plane.transform.localScale = new Vector3(4.923f, 4.923f, 1);
 
                 MeshFilter meshFilter = (MeshFilter)plane.AddComponent(typeof(MeshFilter));
                 meshFilter.mesh = CreateMesh(26, 26);

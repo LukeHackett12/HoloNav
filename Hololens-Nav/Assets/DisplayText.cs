@@ -11,6 +11,7 @@ public class DisplayText : MonoBehaviour
 {
     public GameObject pin;
     public Text text;
+    public Text textm;
     public Text textX;
     public Text textY;
     public Camera mainCamera;
@@ -34,6 +35,7 @@ public class DisplayText : MonoBehaviour
     private void Update()
     {
         text.text = "Location: " + (locationFactory.DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x.ToString() + ", " + locationFactory.DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y.ToString());
+        textm.text = "Magnetometer reading: " + Input.compass.rawVector.ToString();
         textX.text = "Camera x: " + mainCamera.transform.position.x.ToString();
         textY.text = "Camera y: " + mainCamera.transform.position.z.ToString();
     }
