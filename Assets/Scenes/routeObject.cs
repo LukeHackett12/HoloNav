@@ -23,6 +23,7 @@ public class route
 
 }
 
+[System.Serializable]
 public class leg
 {
     public string summary;
@@ -32,6 +33,7 @@ public class leg
     public int distance;
 }
 
+[System.Serializable]
 public class step
 {
     public List<intersection> intersections = new List<intersection>();
@@ -45,6 +47,7 @@ public class step
     public int distance;
 }
 
+[System.Serializable]
 public class maneuver
 {
     public int bearing_after;
@@ -56,7 +59,7 @@ public class maneuver
 
 }
 
-
+[System.Serializable]
 public class intersection
 {
     public ArrayList location = new ArrayList();

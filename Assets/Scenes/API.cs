@@ -26,9 +26,9 @@ public class API : MonoBehaviour
         if (route.routes != null)
         {
             foreach(route currentRoute in route.routes)
-            {
-                text += currentRoute.geometry + " " + currentRoute.weight_name + " " + currentRoute.weight + "\n";
-            }
+                foreach (leg currentLeg in currentRoute.legs)
+                    foreach(step currentStep in currentLeg.steps)
+                        text += currentStep.name + "\n";
             responseText.text = text;
         }
     }
