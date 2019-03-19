@@ -777,6 +777,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77aac79fdcb851c45a1e115f7e6e19fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MeshModifiers:
+  - {fileID: 11400000, guid: 72a54fd58e79618408c60d91df61d553, type: 2}
+  _material: {fileID: 2100000, guid: 49b5d148287c83443bd632e6d5b5bd6f, type: 2}
   polylineOption: 0
   planes: {fileID: 467305690}
   pin: {fileID: 500811829}

@@ -1,8 +1,11 @@
-﻿using Mapbox.Unity.Utilities;
+﻿using Mapbox.Unity.MeshGeneration.Data;
+using Mapbox.Unity.MeshGeneration.Modifiers;
+using Mapbox.Unity.Utilities;
 using Mapbox.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -17,7 +20,9 @@ namespace Assets.Scripts
         public GameObject pin;
         public GameObject mapCamera;
 
+        private int _counter;
         private CustomMap map;
+        GameObject _directionsGO;
 
         void Awake()
         {
@@ -25,7 +30,6 @@ namespace Assets.Scripts
             edges = new List<Edge>();
             map = new CustomMap();
             map.planes = planes;
-            //int polylineOption = SceneVars.destinationOption;
 
             switch (polylineOption)
             {
@@ -58,8 +62,28 @@ namespace Assets.Scripts
 
             Node[] nodes = nodes = generateNodes(vectors, PolylineUtils.Decode(polyline));
 
+            
             generateEdges(nodes);
             drawEdges(edges);
+            
+
+            /*
+            var meshData = new MeshData();
+            List<Vector3> list = new List<Vector3>();
+            foreach (Node n in nodes)
+            {
+                list.Add(n.position);
+            }
+            var feat = new VectorFeatureUnity();
+            feat.Points.Add(list);
+
+            foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
+            {
+                mod.Run(feat, meshData, 10);
+            }
+
+            CreateGameObject(meshData);
+            */
 
             HashSet<Tile> tiles = map.GetTextures(nodes);
             map.PlaceTextures(tiles);
@@ -115,17 +139,23 @@ namespace Assets.Scripts
 
         void drawEdges(List<Edge> edges)
         {
-            foreach (Edge edge in edges)
+            Vector3[] vectors = new Vector3[edges.Count];
+            int i = 0;
+            foreach (Edge e in edges)
             {
-                var go = new GameObject();
-                var lineRenderer = go.AddComponent<LineRenderer>();
-                lineRenderer.startWidth = 0.1f;
-                lineRenderer.endWidth = 0.1f;
-                lineRenderer.startColor = Color.blue;
-                lineRenderer.endColor = Color.blue;
-                lineRenderer.SetPosition(0, new Vector3(edge.source.position.x, edge.source.position.y, edge.source.position.z));
-                lineRenderer.SetPosition(1, new Vector3(edge.destination.position.x, edge.destination.position.y, edge.destination.position.z));
+                vectors[i] = e.source.position;
+                i++;
             }
+
+            var go = new GameObject();
+            var lineRenderer = go.AddComponent<LineRenderer>();
+            lineRenderer.startWidth = 0.5f;
+            lineRenderer.endWidth = 0.5f;
+            lineRenderer.startColor = Color.red;
+            lineRenderer.endColor = Color.red;
+
+            lineRenderer.positionCount = edges.Count;
+            lineRenderer.SetPositions(vectors);
         }
 
         List<Vector2d> ConvertLatLongToMeters(string polyline)
