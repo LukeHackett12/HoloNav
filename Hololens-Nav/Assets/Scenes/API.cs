@@ -42,4 +42,22 @@ public class API : MonoBehaviour
     {
         destination = newText;
     }
+    
+    
+/*  private const string GEOCODER_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
+    public void PlaceNameToCoords(string placeName)
+    {
+        WWW request = new WWW(GEOCODER_URL + placeName + ".json?limit=1&access_token=" + API_KEY);
+        StartCoroutine(ParseCoords(request);
+    }
+    private IEnnumerator ParseCoords(WWW req)
+    {
+        yield return req;
+        geocodeObject geocodeDestination = new geocodeObject();
+        geocodeDestination = JSonUtility.FromJson<geocodeObject>(req.text);
+        string coords = geocodeDestination.coordinates[0];
+        coords += ",";
+        coords += geocodeDestination.coodinates[1];
+        destination = coords;
+    } */
 }
