@@ -55,7 +55,7 @@ public class API : MonoBehaviour
         yield return req;
         geocodeObject geocodeDestination = new geocodeObject();
         geocodeDestination = JSonUtility.FromJson<geocodeObject>(req.text);
-        feature[] features = geocodeDestination.features.toArray();
+        feature[] features = geocodeDestination.features;
 		
 		string coords = features.geolocationGeometry.coordinates[0];
         coords += ",";

@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class geocodeObject
 {
-  public List<feature> features = new List<feature>();
+  public feature[] features;
 }
 
 [System.Serializable]
