@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
         string mapType = "mapbox.mapbox-traffic-v1";
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
-        float zoom = 15;
+        float zoom = 14;
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
         public HashSet<Tile> GetTextures(Node[] Nodes)

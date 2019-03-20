@@ -13,39 +13,27 @@ namespace Assets.Scripts
     class Mapping : MonoBehaviour
     {
         private List<Edge> edges;
-        private string polyline;
-
-        public int polylineOption;
+        public string polyline;
         public GameObject planes;
         public GameObject pin;
         public GameObject mapCamera;
+        public Color startColor;
+        public Color endColor;
 
         private int _counter;
         private CustomMap map;
-        GameObject _directionsGO;
+        private LineRenderer lineRenderer;
 
         void Awake()
         {
-
             edges = new List<Edge>();
             map = new CustomMap();
             map.planes = planes;
 
-            switch (polylineOption)
-            {
-                case 0:
-                    polyline = "mccdIhjyd@ICALJRDZC`AAl@Aj@Ch@Gf@KVQTYTYNcAh@QJOZ?T@RGBMHOHYHU@aAIOCI?E@]?[BSBq@TC@KDCJkAh@KHMFKBYHOD]V?JOf@G@KLAPCb@LTWr@B@?VMJEL}@bE_@dBCTCP?BCLKLCJK`@GTGPAJANBPGFI@CCGIGPEJYhAIXm@tBq@lCu@`Dy@lDYnAWjA@RBNDNRNRRl@j@b@h@R^Xx@Px@Jx@Fl@BhAC~AIx@Gh@Kj@]rA]tAc@dBQt@i@xB_ApDYnA_@hBAFwApFCNq@rCYlAYbAUv@I`@AZZlAp@rCDVZp@LRVJ^A`Am@zAgAbC{AbCwAbBw@x@_@n@QPEp@Gl@Wp@u@JM`@c@^Qd@Ar@H^TZ\\Vl@Rr@D\\Nf@Vx@h@t@d@VbAh@HBj@Pz@Dd@@p@EhA]j@SRIj@a@jAwAXo@h@qA`AwCp@wBh@eB^oAHW^gAb@wAn@wBh@qAXy@NSnAoBZ[z@aAAI?KBIBGKWSi@Me@WiBC[IWQSQWCU?ABA?C@C?EAC?CFYHa@@Y?OFW@Q@IBUDYRoBH_AlA@j@@r@Kr@Y?g@H}@V{ALSVF~@j@P{@V}ADWF@DAB?BBFABOW[H]L@XqA`@sAl@j@";
-                    break;
-                case 1:
-                    polyline = "mnn_Ick}pAfBiF`CzA";
-                    break;
-                case 2:
-                    polyline = "gatfEfidjUk@Lc@@Y?";
-                    break;
-                default:
-                    polyline = "ekn_Imr}pARL\\T^RHDd@\\";
-                    break;
-            }
+            var go = new GameObject();
+            lineRenderer = go.AddComponent<LineRenderer>();
+
+            polyline = "mccdIhjyd@ICALJRDZC`AAl@Aj@Ch@Gf@KVQTYTYNcAh@QJOZ?T@RGBMHOHYHU@aAIOCI?E@]?[BSBq@TC@KDCJkAh@KHMFKBYHOD]V?JOf@G@KLAPCb@LTWr@B@?VMJEL}@bE_@dBCTCP?BCLKLCJK`@GTGPAJANBPGFI@CCGIGPEJYhAIXm@tBq@lCu@`Dy@lDYnAWjA@RBNDNRNRRl@j@b@h@R^Xx@Px@Jx@Fl@BhAC~AIx@Gh@Kj@]rA]tAc@dBQt@i@xB_ApDYnA_@hBAFwApFCNq@rCYlAYbAUv@I`@AZZlAp@rCDVZp@LRVJ^A`Am@zAgAbC{AbCwAbBw@x@_@n@QPEp@Gl@Wp@u@JM`@c@^Qd@Ar@H^TZ\\Vl@Rr@D\\Nf@Vx@h@t@d@VbAh@HBj@Pz@Dd@@p@EhA]j@SRIj@a@jAwAXo@h@qA`AwCp@wBh@eB^oAHW^gAb@wAn@wBh@qAXy@NSnAoBZ[z@aAAI?KBIBGKWSi@Me@WiBC[IWQSQWCU?ABA?C@C?EAC?CFYHa@@Y?OFW@Q@IBUDYRoBH_AlA@j@@r@Kr@Y?g@H}@V{ALSVF~@j@P{@V}ADWF@DAB?BBFABOW[H]L@XqA`@sAl@j@";
         }
 
         void Start()
@@ -66,25 +54,6 @@ namespace Assets.Scripts
             generateEdges(nodes);
             drawEdges(edges);
             
-
-            /*
-            var meshData = new MeshData();
-            List<Vector3> list = new List<Vector3>();
-            foreach (Node n in nodes)
-            {
-                list.Add(n.position);
-            }
-            var feat = new VectorFeatureUnity();
-            feat.Points.Add(list);
-
-            foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
-            {
-                mod.Run(feat, meshData, 10);
-            }
-
-            CreateGameObject(meshData);
-            */
-
             HashSet<Tile> tiles = map.GetTextures(nodes);
             map.PlaceTextures(tiles);
 
@@ -95,6 +64,12 @@ namespace Assets.Scripts
 
 
             //mapCamera.GetComponent<PinMovement>().enabled = true;
+        }
+
+        void Update()
+        {
+            lineRenderer.startColor = startColor;
+            lineRenderer.endColor = endColor;
         }
 
         Node[] generateNodes(Vector2[] points, List<Vector2d> polyline)
@@ -147,12 +122,20 @@ namespace Assets.Scripts
                 i++;
             }
 
-            var go = new GameObject();
-            var lineRenderer = go.AddComponent<LineRenderer>();
             lineRenderer.startWidth = 0.5f;
             lineRenderer.endWidth = 0.5f;
-            lineRenderer.startColor = Color.red;
-            lineRenderer.endColor = Color.red;
+            lineRenderer.material = new Material(Shader.Find("Custom/LineShader"));
+            /*
+            lineRenderer.startColor = startColor;
+            lineRenderer.endColor = endColor;
+            */
+
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new GradientColorKey[] { new GradientColorKey(startColor, 0.0f), new GradientColorKey(endColor, 1.0f) },
+                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 1.0f) }
+            );
+            lineRenderer.colorGradient = gradient;
 
             lineRenderer.positionCount = edges.Count;
             lineRenderer.SetPositions(vectors);
