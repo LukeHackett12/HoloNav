@@ -41,18 +41,12 @@ public class SpeechInput : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Hello there.");
         audioSource = GetComponent<AudioSource>();
-        Debug.Log("Init audiosource");
         ServicePointManager.ServerCertificateValidationCallback = remoteCertificateValidationCallback;
-        Debug.Log("General");
         token = getToken();
-        Debug.Log("Kenobi");
+        Debug.Log("received access token");
 
-        //Go("Say find route followed by your desired destination " +
-        //  "to begin your route");
-
-        Say("Welcome to the application! Enjoy your stay!");
+        Say("Hello. Say find route followed by your desired destination to begin.");
         userInputArr = new string[20];
         //Initialize Dictation Recognizer to listen for destination input
         dictationRecognizer = new DictationRecognizer();
@@ -128,7 +122,6 @@ public class SpeechInput : MonoBehaviour
 
     public void Say(string text)
     {
-        Debug.Log("Gonna say whatsoop pal whatsoop");
         ssml = string.Format(SSMLMarkup, System.Enum.GetName(typeof(Genders), Gender), text);
         byte[] ssmlBytes = System.Text.UTF8Encoding.UTF8.GetBytes(ssml);
 
@@ -150,8 +143,8 @@ public class SpeechInput : MonoBehaviour
         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
         Debug.Log("Got response");
 
-        string path = string.Format("C:\\Users\\Aaron\\Pictures\\{1}.wav",
-            System.IO.Directory.GetCurrentDirectory(),
+        string path = string.Format("{0}\\{1}.wav",
+            Application.persistentDataPath,
             DateTime.Now.ToString("yyyy_mm_dd_HH_nn_ss"));
         Debug.Log(path);
 
