@@ -14,6 +14,7 @@ namespace Assets.Scripts
     {
         private List<Edge> edges;
         public string polyline;
+        public GameObject mainCamera;
         public GameObject planes;
         public GameObject pin;
         public GameObject mapCamera;
@@ -24,14 +25,17 @@ namespace Assets.Scripts
         private CustomMap map;
         private LineRenderer lineRenderer;
 
+        public GameObject firstGo;
+        public GameObject secondGo;
+
+        private int lastDist;
+
         void Awake()
         {
             edges = new List<Edge>();
             map = new CustomMap();
             map.planes = planes;
-
-            var go = new GameObject();
-            lineRenderer = go.AddComponent<LineRenderer>();
+            lastDist = -1;
 
             polyline = "mccdIhjyd@ICALJRDZC`AAl@Aj@Ch@Gf@KVQTYTYNcAh@QJOZ?T@RGBMHOHYHU@aAIOCI?E@]?[BSBq@TC@KDCJkAh@KHMFKBYHOD]V?JOf@G@KLAPCb@LTWr@B@?VMJEL}@bE_@dBCTCP?BCLKLCJK`@GTGPAJANBPGFI@CCGIGPEJYhAIXm@tBq@lCu@`Dy@lDYnAWjA@RBNDNRNRRl@j@b@h@R^Xx@Px@Jx@Fl@BhAC~AIx@Gh@Kj@]rA]tAc@dBQt@i@xB_ApDYnA_@hBAFwApFCNq@rCYlAYbAUv@I`@AZZlAp@rCDVZp@LRVJ^A`Am@zAgAbC{AbCwAbBw@x@_@n@QPEp@Gl@Wp@u@JM`@c@^Qd@Ar@H^TZ\\Vl@Rr@D\\Nf@Vx@h@t@d@VbAh@HBj@Pz@Dd@@p@EhA]j@SRIj@a@jAwAXo@h@qA`AwCp@wBh@eB^oAHW^gAb@wAn@wBh@qAXy@NSnAoBZ[z@aAAI?KBIBGKWSi@Me@WiBC[IWQSQWCU?ABA?C@C?EAC?CFYHa@@Y?OFW@Q@IBUDYRoBH_AlA@j@@r@Kr@Y?g@H}@V{ALSVF~@j@P{@V}ADWF@DAB?BBFABOW[H]L@XqA`@sAl@j@";
         }
@@ -50,9 +54,7 @@ namespace Assets.Scripts
 
             Node[] nodes = nodes = generateNodes(vectors, PolylineUtils.Decode(polyline));
 
-            
             generateEdges(nodes);
-            drawEdges(edges);
             
             HashSet<Tile> tiles = map.GetTextures(nodes);
             map.PlaceTextures(tiles);
@@ -61,15 +63,21 @@ namespace Assets.Scripts
             map.placeLocationPin(polyline, pin);
             pin.GetComponent<ZoomMovement>().loc = pin.transform.localPosition;
             pin.GetComponent<ZoomMovement>().enabled = true;
-
-
-            //mapCamera.GetComponent<PinMovement>().enabled = true;
         }
 
         void Update()
         {
-            lineRenderer.startColor = startColor;
-            lineRenderer.endColor = endColor;
+            int dist = getClosestEdge(edges);
+            Debug.Log(dist);
+            if (dist != lastDist)
+            {
+                List<Edge> first = edges.Take(dist+1).ToList();
+                List<Edge> second = edges.Skip(dist).ToList();
+                firstGo = drawEdges(firstGo, first, startColor);
+                secondGo = drawEdges(secondGo, second, endColor);
+
+                lastDist = dist;
+            }
         }
 
         Node[] generateNodes(Vector2[] points, List<Vector2d> polyline)
@@ -84,6 +92,10 @@ namespace Assets.Scripts
                 {
                     node.prev = nodes[i - 1];
                 }
+                else
+                {
+                    node.prev = new Node(null, new Vector3(0,0,0));
+                }
 
                 node.position = new Vector3(points[i].x, -1, points[i].y);
                 node.latLong = polyline[i];
@@ -95,6 +107,7 @@ namespace Assets.Scripts
 
         void generateEdges(Node[] nodes)
         {
+
             foreach (Node node in nodes)
             {
                 if (node.prev != null)
@@ -103,8 +116,6 @@ namespace Assets.Scripts
                     edges.Add(e);
                 }
             }
-
-            Debug.Log("Edges: " + edges.Count);
         }
 
         float getDistance(Vector3 point)
@@ -112,33 +123,46 @@ namespace Assets.Scripts
             return (Mathf.Sqrt(Mathf.Pow(point.x, 2) + Mathf.Pow(point.z, 2)));
         }
 
-        void drawEdges(List<Edge> edges)
+        GameObject drawEdges(GameObject go, List<Edge> edges, Color color)
         {
-            Vector3[] vectors = new Vector3[edges.Count];
-            int i = 0;
-            foreach (Edge e in edges)
-            {
-                vectors[i] = e.source.position;
-                i++;
-            }
+            if (go == null)
+                go = new GameObject(color.ToString());
+
+            lineRenderer = go.GetComponent<LineRenderer>();
+            if (lineRenderer != null)
+                lineRenderer.positionCount = 0;
+            else
+                lineRenderer = go.AddComponent<LineRenderer>();
 
             lineRenderer.startWidth = 0.5f;
             lineRenderer.endWidth = 0.5f;
             lineRenderer.material = new Material(Shader.Find("Custom/LineShader"));
-            /*
-            lineRenderer.startColor = startColor;
-            lineRenderer.endColor = endColor;
-            */
-
-            Gradient gradient = new Gradient();
-            gradient.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(startColor, 0.0f), new GradientColorKey(endColor, 1.0f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 1.0f) }
-            );
-            lineRenderer.colorGradient = gradient;
 
             lineRenderer.positionCount = edges.Count;
-            lineRenderer.SetPositions(vectors);
+            for (int i = 0; i < edges.Count; i++)
+            {
+                lineRenderer.SetPosition(i, edges[i].source.position);
+            }
+
+            lineRenderer.startColor = color;
+            lineRenderer.endColor = color;
+
+            return go;
+        }
+
+        int getClosestEdge(List<Edge> edges)
+        {
+            int smallestDist = 0;
+            for(int i = 0; i < edges.Count; i++)
+            {
+                Edge edge = edges[i];
+                if(Vector3.Distance(edge.source.position, mainCamera.transform.position) < Vector3.Distance(edges[smallestDist].source.position, mainCamera.transform.position))
+                {
+                    smallestDist = i;
+                }
+            }
+
+            return smallestDist;
         }
 
         List<Vector2d> ConvertLatLongToMeters(string polyline)
