@@ -26,6 +26,7 @@ namespace Assets.Scripts
         private LineRenderer lineRenderer;
 
         public GameObject firstGo;
+        public GameObject currentGo;
         public GameObject secondGo;
 
         private int lastDist;
@@ -71,10 +72,12 @@ namespace Assets.Scripts
             Debug.Log(dist);
             if (dist != lastDist)
             {
-                List<Edge> first = edges.Take(dist+1).ToList();
+                List<Edge> first = edges.Take(dist).ToList();
+                List<Edge> middle = edges.Skip(dist).Take(1).ToList();
                 List<Edge> second = edges.Skip(dist).ToList();
-                firstGo = drawEdges(firstGo, first, startColor);
-                secondGo = drawEdges(secondGo, second, endColor);
+                firstGo = drawEdges(firstGo, first, startColor, startColor);
+                currentGo = drawEdges(currentGo, middle, endColor, startColor);
+                secondGo = drawEdges(secondGo, second, endColor, endColor);
 
                 lastDist = dist;
             }
@@ -123,10 +126,10 @@ namespace Assets.Scripts
             return (Mathf.Sqrt(Mathf.Pow(point.x, 2) + Mathf.Pow(point.z, 2)));
         }
 
-        GameObject drawEdges(GameObject go, List<Edge> edges, Color color)
+        GameObject drawEdges(GameObject go, List<Edge> edges, Color startColor, Color endColor)
         {
             if (go == null)
-                go = new GameObject(color.ToString());
+                go = new GameObject(startColor.ToString() + "_" + endColor.ToString());
 
             lineRenderer = go.GetComponent<LineRenderer>();
             if (lineRenderer != null)
@@ -138,14 +141,23 @@ namespace Assets.Scripts
             lineRenderer.endWidth = 0.5f;
             lineRenderer.material = new Material(Shader.Find("Custom/LineShader"));
 
-            lineRenderer.positionCount = edges.Count;
+            lineRenderer.positionCount = edges.Count + 1;
             for (int i = 0; i < edges.Count; i++)
             {
-                lineRenderer.SetPosition(i, edges[i].source.position);
+                if (i == edges.Count - 1)
+                {
+                    lineRenderer.SetPosition(i, edges[i].source.position);
+                    lineRenderer.SetPosition(i+1, edges[i].destination.position);
+                    i++;
+                }
+                else
+                {
+                    lineRenderer.SetPosition(i, edges[i].source.position);
+                }
             }
 
-            lineRenderer.startColor = color;
-            lineRenderer.endColor = color;
+            lineRenderer.startColor = startColor;
+            lineRenderer.endColor = endColor;
 
             return go;
         }
