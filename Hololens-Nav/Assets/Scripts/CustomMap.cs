@@ -18,10 +18,9 @@ namespace Assets.Scripts
 
         string mapType = "mapbox.mapbox-traffic-v1";
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
-        float zoom = 14;
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
-        public HashSet<Tile> GetTextures(Node[] Nodes)
+        public HashSet<Tile> GetTextures(Node[] Nodes, float zoom)
         {
             ArrayList textures = new ArrayList();
             ArrayList usedCoords = new ArrayList();
@@ -45,7 +44,7 @@ namespace Assets.Scripts
                 Vector2d coords = convertLatLongToSlippy(n.latLong.x, n.latLong.y, zoom);
                 if (!coordsContained(usedCoords, coords))
                 {
-                    Texture tex = (GetTileTex((int)coords.x, (int)coords.y));
+                    Texture tex = (GetTileTex((int)coords.x, (int)coords.y, zoom));
 
                     if (textures.Count == 0)
                     {
@@ -55,7 +54,7 @@ namespace Assets.Scripts
                         foreach (Vector2 vector in vectors)
                         {
                             Vector3 pos = new Vector3(tile.relativeLocation.x - (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256));
-                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x));
+                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x, zoom));
                             tiles.Add(new Tile(surround, pos));
                         }
                     }
@@ -69,7 +68,7 @@ namespace Assets.Scripts
                         foreach (Vector2 vector in vectors)
                         {
                             Vector3 pos = new Vector3(tile.relativeLocation.x - (vector.x * 256), tile.relativeLocation.y, tile.relativeLocation.z + (vector.y * 256));
-                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x));
+                            Texture surround = (GetTileTex(int.Parse(tile.texture.name.Split(':')[0]) + (int)vector.y, int.Parse(tile.texture.name.Split(':')[1]) + (int)vector.x, zoom));
                             tiles.Add(new Tile(surround, pos));
                         }
 
@@ -97,16 +96,16 @@ namespace Assets.Scripts
             return (new Vector2(newX - oldX, oldY - newY));
         }
 
-        public  void placeLocationPin(String polyline, GameObject pin)
+        public  void placeLocationPin(String polyline, GameObject pin, float zoom)
         {
             //Place astronaut at start and keep updated location with InvokeRepeating
-            Vector2d startCoords = GetWorldSpaceOfLatLong(PolylineUtils.Decode(polyline)[0]);
+            Vector2d startCoords = GetWorldSpaceOfLatLong(PolylineUtils.Decode(polyline)[0], zoom);
 
             pin.transform.SetParent(planes.transform);
             pin.transform.localPosition = new Vector3((float)startCoords.x, 0, (float)startCoords.y);
         }
 
-        private Vector2d GetWorldSpaceOfLatLong(Vector2d vector2d)
+        private Vector2d GetWorldSpaceOfLatLong(Vector2d vector2d, float zoom)
         {
             Vector2d coords = convertLatLongToSlippy(vector2d.x, vector2d.y, zoom);
             coords = new Vector2d(coords.x - Math.Truncate(coords.x), coords.y - Math.Truncate(coords.y));
@@ -126,7 +125,7 @@ namespace Assets.Scripts
             return false;
         }
 
-        public Texture GetTileTex(int x, int y)
+        public Texture GetTileTex(int x, int y, float zoom)
         {
             string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, x, y, "png", mapStyle, token);
             Debug.Log("url " + uri);

@@ -15,10 +15,13 @@ namespace Assets.Scripts
         private List<Edge> edges;
         public string polyline;
         public Material material;
+
         public GameObject mainCamera;
         public GameObject planes;
         public GameObject pin;
         public GameObject mapCamera;
+        public float mapZoom;
+
         public Color startColor;
         public Color endColor;
 
@@ -38,8 +41,6 @@ namespace Assets.Scripts
             map = new CustomMap();
             map.planes = planes;
             lastDist = -1;
-
-            polyline = "mccdIhjyd@ICALJRDZC`AAl@Aj@Ch@Gf@KVQTYTYNcAh@QJOZ?T@RGBMHOHYHU@aAIOCI?E@]?[BSBq@TC@KDCJkAh@KHMFKBYHOD]V?JOf@G@KLAPCb@LTWr@B@?VMJEL}@bE_@dBCTCP?BCLKLCJK`@GTGPAJANBPGFI@CCGIGPEJYhAIXm@tBq@lCu@`Dy@lDYnAWjA@RBNDNRNRRl@j@b@h@R^Xx@Px@Jx@Fl@BhAC~AIx@Gh@Kj@]rA]tAc@dBQt@i@xB_ApDYnA_@hBAFwApFCNq@rCYlAYbAUv@I`@AZZlAp@rCDVZp@LRVJ^A`Am@zAgAbC{AbCwAbBw@x@_@n@QPEp@Gl@Wp@u@JM`@c@^Qd@Ar@H^TZ\\Vl@Rr@D\\Nf@Vx@h@t@d@VbAh@HBj@Pz@Dd@@p@EhA]j@SRIj@a@jAwAXo@h@qA`AwCp@wBh@eB^oAHW^gAb@wAn@wBh@qAXy@NSnAoBZ[z@aAAI?KBIBGKWSi@Me@WiBC[IWQSQWCU?ABA?C@C?EAC?CFYHa@@Y?OFW@Q@IBUDYRoBH_AlA@j@@r@Kr@Y?g@H}@V{ALSVF~@j@P{@V}ADWF@DAB?BBFABOW[H]L@XqA`@sAl@j@";
         }
 
         void Start()
@@ -58,11 +59,12 @@ namespace Assets.Scripts
 
             generateEdges(nodes);
             
-            HashSet<Tile> tiles = map.GetTextures(nodes);
+            HashSet<Tile> tiles = map.GetTextures(nodes, mapZoom);
             map.PlaceTextures(tiles);
 
             pin.GetComponent<ZoomMovement>().enabled = false;
-            map.placeLocationPin(polyline, pin);
+            map.placeLocationPin(polyline, pin, mapZoom);
+            pin.GetComponent<ZoomMovement>().calcScale(PolylineUtils.Decode(polyline).First(), mapZoom);
             pin.GetComponent<ZoomMovement>().loc = pin.transform.localPosition;
             pin.GetComponent<ZoomMovement>().enabled = true;
         }
