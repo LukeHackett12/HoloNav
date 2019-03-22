@@ -14,6 +14,7 @@ namespace Assets.Scripts
     {
         private List<Edge> edges;
         public string polyline;
+        public Material material;
         public GameObject mainCamera;
         public GameObject planes;
         public GameObject pin;
@@ -139,7 +140,7 @@ namespace Assets.Scripts
 
             lineRenderer.startWidth = 0.5f;
             lineRenderer.endWidth = 0.5f;
-            lineRenderer.material = new Material(Shader.Find("Custom/LineShader"));
+            lineRenderer.material = material;
 
             lineRenderer.positionCount = edges.Count + 1;
             for (int i = 0; i < edges.Count; i++)

@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using CompassLibrary;
 
 public class DisplayText : MonoBehaviour
 {
@@ -38,7 +37,6 @@ public class DisplayText : MonoBehaviour
     private void Update()
     {
         text.text = "Location: " + (locationFactory.DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x.ToString() + ", " + locationFactory.DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y.ToString());
-        textm.text = "Magnetometer reading: " + (new CompassInterface()).conf();// + Input.compass.rawVector.ToString();
         textX.text = "Camera x: " + mainCamera.transform.position.x.ToString();
         textY.text = "Camera y: " + mainCamera.transform.position.z.ToString();
     }

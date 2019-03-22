@@ -822,13 +822,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   polyline: 
-  mainCamera: {fileID: 1294978022}
+  material: {fileID: 2100000, guid: af5fe4a3d4b58c041ba017f17fbf1f72, type: 2}
+  mainCamera: {fileID: 1144579001}
   planes: {fileID: 467305690}
   pin: {fileID: 500811829}
   mapCamera: {fileID: 954423406}
   startColor: {r: 0.8962264, g: 0.114142045, b: 0.114142045, a: 0}
   endColor: {r: 0.26312745, g: 0.764151, b: 0.32049382, a: 1}
   firstGo: {fileID: 0}
+  currentGo: {fileID: 0}
   secondGo: {fileID: 0}
 --- !u!1 &1252335033
 GameObject:
