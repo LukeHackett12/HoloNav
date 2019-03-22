@@ -20,6 +20,7 @@ using UnityEngine.Networking;
 
 
 
+
 public class SpeechInput : MonoBehaviour
 {
     DictationRecognizer dictationRecognizer;
@@ -34,6 +35,7 @@ public class SpeechInput : MonoBehaviour
     public string SSMLMarkup = "<speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='{0}' name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>{1}</voice></speak>";
     public Genders Gender = Genders.Female;
     public AudioSource audioSource;
+    public API router;
     private string token;
     private string ssml;
 
@@ -41,16 +43,19 @@ public class SpeechInput : MonoBehaviour
 
     void Start()
     {
+        router = GetComponent<API>();
         audioSource = GetComponent<AudioSource>();
         ServicePointManager.ServerCertificateValidationCallback = remoteCertificateValidationCallback;
+
         token = getToken();
         Debug.Log("received access token");
 
         Say("Hello. Say find route followed by your desired destination to begin.");
         userInputArr = new string[20];
+        userInputLength = 0;
         //Initialize Dictation Recognizer to listen for destination input
         dictationRecognizer = new DictationRecognizer();
-        dictationRecognizer.AutoSilenceTimeoutSeconds = 3;
+        dictationRecognizer.AutoSilenceTimeoutSeconds = 2;
 
 
         //Event handlers for Dictation Recogizer
@@ -71,7 +76,7 @@ public class SpeechInput : MonoBehaviour
     //Add preset keywords to Dictionary
     public void setKeyWords()
     {
-        keywords.Add("Find Route", () =>
+        keywords.Add("Destination", () =>
         {
             PhraseRecognitionSystem.Shutdown();
             dictationRecognizer.Start();
@@ -93,19 +98,22 @@ public class SpeechInput : MonoBehaviour
     {
         Debug.Log("Heard: " + text);
         userInputArr[userInputLength] = text;
+        userInputLength++;
     }
 
 
     //Handles the end of speech input
     public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
-
+        userInputLength = 0;
         Debug.Log("Stopped listening to you");
         userInputStr = string.Join(" ", userInputArr);
         Debug.Log("Full address: " + userInputStr);
-        string StrToSend = "Your chosen destination is" + userInputStr;
+        string StrToSend = "Your chosen destination is " + userInputStr;
         Debug.Log("String to send" + StrToSend);
         Say(StrToSend);
+        router.PlaceNameToCoords("Dublin");
+        router.request();
         PhraseRecognitionSystem.Restart();
     }
 

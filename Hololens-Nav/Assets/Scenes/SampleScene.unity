@@ -194,6 +194,7 @@ GameObject:
   - component: {fileID: 534669903}
   - component: {fileID: 534669906}
   - component: {fileID: 534669907}
+  - component: {fileID: 534669908}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: Untagged
@@ -282,6 +283,7 @@ MonoBehaviour:
     name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>{1}</voice></speak>
   Gender: 1
   audioSource: {fileID: 0}
+  router: {fileID: 0}
 --- !u!82 &534669907
 AudioSource:
   m_ObjectHideFlags: 0
@@ -378,6 +380,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &534669908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534669902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04f7463488aa95b4da174393538f6d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  responseText: {fileID: 0}
 --- !u!1 &1137400980
 GameObject:
   m_ObjectHideFlags: 0
