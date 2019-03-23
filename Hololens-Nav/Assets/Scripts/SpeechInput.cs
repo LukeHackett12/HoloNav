@@ -19,7 +19,8 @@ using UnityEngine.Networking;
 
 
 
-
+// NOTE: Ensure that Windows 10 Settings -> Privacy -> Speech, inking and
+// typing has the setting enabled to support speech recognition
 
 public class SpeechInput : MonoBehaviour
 {
@@ -43,14 +44,19 @@ public class SpeechInput : MonoBehaviour
 
     void Start()
     {
-        router = GetComponent<API>();
+		Debug.Log("Speech input debug messages will begin with SI.");
+		Debug.Log("Text-to-Speech debug messages will begin with TTS.");
+		Debug.Log("Geocoder (place name to coordinates) debug messages will begin with GC.");
+		Debug.Log("Route (coordinates to route) debug messages will begin with RT.");
+
+        router = GetComponent<API>();	// reference to the API.cs script
         audioSource = GetComponent<AudioSource>();
         ServicePointManager.ServerCertificateValidationCallback = remoteCertificateValidationCallback;
 
         token = getToken();
-        Debug.Log("received access token");
+        Debug.Log("TTS: Received access token");
 
-        Say("Hello. Say find route followed by your desired destination to begin.");
+        Say("Hello. Say destination followed by your desired destination to begin.");
         userInputArr = new string[20];
         userInputLength = 0;
         //Initialize Dictation Recognizer to listen for destination input
@@ -85,7 +91,7 @@ public class SpeechInput : MonoBehaviour
         keywords.Add("Change Route", () =>
         {
             PhraseRecognitionSystem.Shutdown();
-            Debug.Log("Changing Route");
+            Debug.Log("SI: Changing Route");
             dictationRecognizer.Start();
         });
 
@@ -96,7 +102,7 @@ public class SpeechInput : MonoBehaviour
     //TODO: Configure appropriate confidence level threshold
     public void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
-        Debug.Log("Heard: " + text);
+        Debug.Log("SI: Heard " + text);
         userInputArr[userInputLength] = text;
         userInputLength++;
     }
@@ -106,16 +112,42 @@ public class SpeechInput : MonoBehaviour
     public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
         userInputLength = 0;
-        Debug.Log("Stopped listening to you");
+        Debug.Log("SI: Dictation complete, stopped listening");
         userInputStr = string.Join(" ", userInputArr);
-        Debug.Log("Full address: " + userInputStr);
-        string StrToSend = "Your chosen destination is " + userInputStr;
-        Debug.Log("String to send" + StrToSend);
-        Say(StrToSend);
-        router.PlaceNameToCoords("Dublin");
-        router.request();
-        PhraseRecognitionSystem.Restart();
+        Debug.Log("SI: You said " + userInputStr);
+		if(emptyInput(userInputStr))
+		{
+			Say("Sorry, I did not catch that. Please try again.");
+		}
+		else
+		{
+			string StrToSend = "Your chosen destination is " + userInputStr;
+			Say(StrToSend);
+			try
+			{
+			router.PlaceNameToCoords(userInputStr);
+			router.request();
+			}
+			catch
+			{
+				Say("Sorry, I cannot find a route to " + userInputStr + ", please choose another destination.");
+			}
+		}
+		PhraseRecognitionSystem.Restart();
     }
+	
+	// Returns whether the string contains only spaces
+	private bool emptyInput(string s) 
+	{ 
+		if(s == null)
+			return true;
+		int n = s.Length; 
+		for (int i = 1; i < n; i++) 
+			if (s[i] != ' ') 
+				return false; 
+  
+		return true; 
+	}
 
     //Calls correct action when paired keyword is spoken
     public void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -130,6 +162,7 @@ public class SpeechInput : MonoBehaviour
 
     public void Say(string text)
     {
+		Debug.Log("TTS: Called Say() with parameter " + text);
         ssml = string.Format(SSMLMarkup, System.Enum.GetName(typeof(Genders), Gender), text);
         byte[] ssmlBytes = System.Text.UTF8Encoding.UTF8.GetBytes(ssml);
 
@@ -142,14 +175,14 @@ public class SpeechInput : MonoBehaviour
         request.ContentLength = ssmlBytes.Length;
         request.UserAgent = "ContosaEnergy";
 
-        Debug.Log("making request");
+        Debug.Log("TTS: Making request");
         System.IO.Stream postData = request.GetRequestStream();
         postData.Write(ssmlBytes, 0, ssmlBytes.Length);
         postData.Close();
 
-        Debug.Log("Awaiting response");
+        Debug.Log("TTS: Awaiting response");
         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        Debug.Log("Got response");
+        Debug.Log("TTS: Got response");
 
         string path = string.Format("{0}\\{1}.wav",
             Application.persistentDataPath,
