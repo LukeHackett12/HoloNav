@@ -1,4 +1,6 @@
-﻿using Mapbox.Utils;
+﻿using Assets.Scripts;
+using Mapbox.Unity.Location;
+using Mapbox.Utils;
 using Mapbox.VectorTile;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,15 +12,17 @@ public class API : MonoBehaviour
     private const string URL = "https://api.mapbox.com/directions/v5/mapbox/walking/";
     private const string API_KEY = "pk.eyJ1IjoiamVuZ2VsczAzIiwiYSI6ImNqaXZ1aDVjODE0ZDQzam56dHJhc3dmNG8ifQ.2jBiS1t1o8uY4KuSbBMOtg";
 	private const string GEOCODER_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
-	private const string TEST_CURRENT_COORDS = "-6.2546,53.3438";
 	private string destination;
     public Text responseText;
+    public GameObject locationProvider;
+    public GameObject mapping;
 
     public void request()
     {
+        string loc = locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x + "," + locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y;
         //https://api.mapbox.com/directions/v5/mapbox/walking/-6.5207408,53.511152;-6.257853,53.344444?steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric&waypoint_names=Home;Work&access_token=pk.eyJ1IjoiZmllbGRzYWwiLCJhIjoiY2pzbXlwNGF4MDY0ZDQ5cGVrN2MwcG45dCJ9.MYsalppgAht84dBaUjW-zw
-        Debug.Log(URL + TEST_CURRENT_COORDS + ";" + destination + "?" + "geometries=polyline&steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY);
-        WWW request = new WWW(URL + TEST_CURRENT_COORDS + ";" + destination + ".json?" + "steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY);
+        Debug.Log(URL + loc + ";" + destination + "?" + "geometries=polyline&steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY);
+        WWW request = new WWW(URL + "-6.251116,53.342044" + ";" + destination + ".json?" + "steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY);
         Debug.Log("RT: Called request for coordinates " + destination);
         StartCoroutine(OnResponse(request));
     }
@@ -41,13 +45,8 @@ public class API : MonoBehaviour
                         }
             Debug.Log(text);
             Debug.Log("Geometry: " + route.routes[0].geometry);
-            List<Vector2d> line = PolylineUtils.Decode(route.routes[0].geometry);
-            foreach(Vector2d v in line)
-            {
-                Debug.Log("Lat : " + v.y + " and Long: " + v.x);
-            }
 
-            // TODO load map and stuff here
+            mapping.GetComponent<Mapping>().Initialise(route.routes[0].geometry);
         }
     }
 
