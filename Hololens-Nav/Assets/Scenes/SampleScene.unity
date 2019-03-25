@@ -193,7 +193,6 @@ GameObject:
   - component: {fileID: 534669904}
   - component: {fileID: 534669903}
   - component: {fileID: 534669906}
-  - component: {fileID: 534669909}
   - component: {fileID: 534669907}
   - component: {fileID: 534669908}
   m_Layer: 0
@@ -283,8 +282,8 @@ MonoBehaviour:
   SSMLMarkup: <speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='{0}'
     name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>{1}</voice></speak>
   Gender: 1
-  audioSource: {fileID: 0}
-  router: {fileID: 534669909}
+  audioSource: {fileID: 534669907}
+  router: {fileID: 534669908}
 --- !u!82 &534669907
 AudioSource:
   m_ObjectHideFlags: 0
@@ -390,19 +389,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04f7463488aa95b4da174393538f6d42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &534669909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534669902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68c3045e7518f9a458dc9638991b0cd7, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b509a870893bd542b559cdb61c7a0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   responseText: {fileID: 0}
