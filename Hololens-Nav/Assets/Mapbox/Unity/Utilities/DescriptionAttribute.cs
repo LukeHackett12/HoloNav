@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 ﻿namespace Mapbox.VectorTile.Geometry
+=======
+﻿#if UNITY_EDITOR
+namespace Mapbox.VectorTile.Geometry
+>>>>>>> master
 {
 
 
@@ -20,3 +25,7 @@
 
 
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> master
