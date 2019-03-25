@@ -12,15 +12,6 @@ namespace Mapbox.MapMatching
 	/// <summary>Directions profile id</summary>
 	public enum Profile
 	{
-<<<<<<< HEAD
-		[System.ComponentModel.Description("mapbox/driving")]
-		MapboxDriving,
-		[System.ComponentModel.Description("mapbox/driving-traffic")]
-		MapboxDrivingTraffic,
-		[System.ComponentModel.Description("mapbox/walking")]
-		MapboxWalking,
-		[System.ComponentModel.Description("mapbox/cycling")]
-=======
 		[Description("mapbox/driving")]
 		MapboxDriving,
 		[Description("mapbox/driving-traffic")]
@@ -28,7 +19,6 @@ namespace Mapbox.MapMatching
 		[Description("mapbox/walking")]
 		MapboxWalking,
 		[Description("mapbox/cycling")]
->>>>>>> master
 		MapboxCycling
 	}
 
@@ -37,15 +27,6 @@ namespace Mapbox.MapMatching
 	public enum Geometries
 	{
 		/// <summary>Default, precision 5.</summary>
-<<<<<<< HEAD
-		[System.ComponentModel.Description("polyline")]
-		Polyline,
-		/// <summary>Precision 6.</summary>
-		[System.ComponentModel.Description("polyline6")]
-		Polyline6,
-		/// <summary>Geojson.</summary>
-		[System.ComponentModel.Description("geojson")]
-=======
 		[Description("polyline")]
 		Polyline,
 		/// <summary>Precision 6.</summary>
@@ -53,7 +34,6 @@ namespace Mapbox.MapMatching
 		Polyline6,
 		/// <summary>Geojson.</summary>
 		[Description("geojson")]
->>>>>>> master
 		GeoJson
 	}
 
@@ -62,15 +42,6 @@ namespace Mapbox.MapMatching
 	public enum Overview
 	{
 		/// <summary>The most detailed geometry available </summary>
-<<<<<<< HEAD
-		[System.ComponentModel.Description("full")]
-		Full,
-		/// <summary>A simplified version of the full geometry</summary>
-		[System.ComponentModel.Description("simplified")]
-		Simplified,
-		/// <summary>No overview geometry </summary>
-		[System.ComponentModel.Description("false")]
-=======
 		[Description("full")]
 		Full,
 		/// <summary>A simplified version of the full geometry</summary>
@@ -78,8 +49,7 @@ namespace Mapbox.MapMatching
 		Simplified,
 		/// <summary>No overview geometry </summary>
 		[Description("false")]
->>>>>>> master
-		None
+        None
 	}
 
 
@@ -87,15 +57,6 @@ namespace Mapbox.MapMatching
 	[System.Flags]
 	public enum Annotations
 	{
-<<<<<<< HEAD
-		[System.ComponentModel.Description("duration")]
-		Duration,
-		[System.ComponentModel.Description("distance")]
-		Distance,
-		[System.ComponentModel.Description("speed")]
-		Speed,
-		[System.ComponentModel.Description("congestion")]
-=======
 		[Description("duration")]
 		Duration,
 		[Description("distance")]
@@ -103,7 +64,6 @@ namespace Mapbox.MapMatching
 		[Description("speed")]
 		Speed,
 		[Description("congestion")]
->>>>>>> master
 		Congestion
 	}
 
@@ -113,14 +73,8 @@ namespace Mapbox.MapMatching
 	/// </summary>
 	public enum InstructionLanguages
 	{
-<<<<<<< HEAD
 		[System.ComponentModel.Description("de")]
 		German,
-        /*
-=======
-		[Description("de")]
-		German,
->>>>>>> master
 		[Description("en")]
 		English,
 		[Description("eo")]
@@ -155,10 +109,6 @@ namespace Mapbox.MapMatching
 		Vietnamese,
 		[Description("zh-Hans")]
 		ChineseSimplified
-<<<<<<< HEAD
-        */
-=======
->>>>>>> master
 	}
 
 

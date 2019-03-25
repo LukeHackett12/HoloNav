@@ -19,12 +19,6 @@ namespace Mapbox.Unity.Location
 	/// </summary>
 	public class DeviceLocationProvider : AbstractLocationProvider
 	{
-
-<<<<<<< HEAD
-=======
-        public GameObject test;
->>>>>>> master
-
 		/// <summary>
 		/// Using higher value like 500 usually does not require to turn GPS chip on and thus saves battery power. 
 		/// Values like 5-10 could be used for getting best accuracy.
@@ -186,11 +180,7 @@ namespace Mapbox.Unity.Location
 			_locationService.Start(_desiredAccuracyInMeters, _updateDistanceInMeters);
 			Input.compass.enabled = true;
 
-<<<<<<< HEAD
 			int maxWait = 20;
-=======
-            int maxWait = 20;
->>>>>>> master
 			while (_locationService.status == LocationServiceStatus.Initializing && maxWait > 0)
 			{
 				yield return _wait1sec;
@@ -262,11 +252,7 @@ namespace Mapbox.Unity.Location
 				// https://forum.unity.com/threads/precision-of-location-longitude-is-worse-when-longitude-is-beyond-100-degrees.133192/#post-1835164
 				double latitude = double.Parse(lastData.latitude.ToString("R", invariantCulture), invariantCulture);
 				double longitude = double.Parse(lastData.longitude.ToString("R", invariantCulture), invariantCulture);
-<<<<<<< HEAD
-				Vector2d previousLocation = new Vector2d(_currentLocation.LatitudeLongitude.x, _currentLocation.LatitudeLongitude.y);
-=======
                 Vector2d previousLocation = new Vector2d(_currentLocation.LatitudeLongitude.x, _currentLocation.LatitudeLongitude.y);
->>>>>>> master
 				_currentLocation.LatitudeLongitude = new Vector2d(latitude, longitude);
 
 				_currentLocation.Accuracy = (float)Math.Floor(lastData.horizontalAccuracy);
@@ -348,16 +334,7 @@ namespace Mapbox.Unity.Location
 					}
 				}
 
-				_currentLocation.TimestampDevice = UnixTimestampUtils.To(DateTime.UtcNow);
-<<<<<<< HEAD
-				SendLocation(_currentLocation);
-=======
-                test.transform.rotation = Quaternion.Euler(0, -Input.compass.trueHeading, 0);
-                Debug.Log("True heading: " + Input.compass.trueHeading);
-                Debug.Log("Raw vector: " + Input.compass.rawVector);
-
                 SendLocation(_currentLocation);
->>>>>>> master
 
 				yield return _waitUpdateTime;
 			}

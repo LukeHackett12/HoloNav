@@ -12,21 +12,6 @@ namespace Mapbox.Tokens
 	public enum MapboxTokenStatus
 	{
 		/// <summary>The token is valid and active </summary>
-<<<<<<< HEAD
-		[System.ComponentModel.Description("The token is valid and active")]
-		TokenValid,
-		/// <summary>the token can not be parsed </summary>
-		[System.ComponentModel.Description("the token can not be parsed")]
-		TokenMalformed,
-		/// <summary>the signature for the token does not validate </summary>
-		[System.ComponentModel.Description("the signature for the token does not validate")]
-		TokenInvalid,
-		/// <summary> the token was temporary and expired</summary>
-		[System.ComponentModel.Description("the token was temporary and expired")]
-		TokenExpired,
-		/// <summary>the token's authorization has been revoked </summary>
-		[System.ComponentModel.Description("the token's authorization has been revoked")]
-=======
 		[Description("The token is valid and active")]
 		TokenValid,
 		/// <summary>the token can not be parsed </summary>
@@ -40,7 +25,6 @@ namespace Mapbox.Tokens
 		TokenExpired,
 		/// <summary>the token's authorization has been revoked </summary>
 		[Description("the token's authorization has been revoked")]
->>>>>>> master
 		TokenRevoked,
 		/// <summary>inital value </summary>
 		StatusNotYetSet
