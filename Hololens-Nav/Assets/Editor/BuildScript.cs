@@ -6,7 +6,7 @@ public class BuildScript
     {
         // Place all your scenes here
 		//"Assets/scenes/MainMenu.unity"
-        string[] scenes = {"Assets/scenes/demo.unity"};
+        string[] scenes = {"Assets/scenes/SampleScene.unity"};
 
         string pathToDeploy = "UWP/";
 
