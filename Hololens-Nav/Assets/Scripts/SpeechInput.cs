@@ -125,7 +125,7 @@ public class SpeechInput : MonoBehaviour
 			Say(StrToSend);
 			try
 			{
-                router.PlaceNameToCoords("Dublin");// userInputStr);
+                router.PlaceNameToCoords(userInputStr);
 			}
 			catch
 			{

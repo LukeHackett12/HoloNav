@@ -224,6 +224,36 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 534669902}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: startColor.r
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: startColor.g
+      value: 0.2731399
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: startColor.b
+      value: 0.52583426
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: endColor.r
+      value: 0.21568628
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: endColor.g
+      value: 0.2264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110036273904859025, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
+        type: 3}
+      propertyPath: endColor.b
+      value: 0.6156863
+      objectReference: {fileID: 0}
     - target: {fileID: 968002078562495461, guid: cdd25fa65a5f9d9438aca5d7cb93357a,
         type: 3}
       propertyPath: m_Layer
