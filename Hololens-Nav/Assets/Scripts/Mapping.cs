@@ -80,7 +80,6 @@ namespace Assets.Scripts
             if (initialised)
             {
                 int dist = getClosestEdge(edges);
-                Debug.Log(dist);
                 if (dist != lastDist)
                 {
                     List<Edge> first = edges.Take(dist).ToList();

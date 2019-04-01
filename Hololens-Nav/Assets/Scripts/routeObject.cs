@@ -40,12 +40,13 @@ public class step
     public string driving_side;
     public string geometry;
     public string mode;
-    public List<maneuver> maneuvers = new List<maneuver>();
+    public maneuver maneuver;
     public int weight;
     public int duration;
     public string name;
     public int distance;
     public List<voiceInstructions> voiceInstructions = new List<voiceInstructions>();
+    public List<bannerInstructions> bannerInstructions = new List<bannerInstructions>();
 }
 
 [System.Serializable]
@@ -63,10 +64,24 @@ public class maneuver
 [System.Serializable]
 public class voiceInstructions
 {
-    public int distanceAlongGeometry;
+    public float distanceAlongGeometry;
     public string announcement;
     public string ssmlAnnouncement;
+}
 
+[System.Serializable]
+public class primary
+{
+    public string text;
+    public string type;
+    public string modifier;
+}
+
+[System.Serializable]
+public class bannerInstructions
+{
+    public float distanceAlongGeometry;
+    public primary primary;
 }
 
 [System.Serializable]

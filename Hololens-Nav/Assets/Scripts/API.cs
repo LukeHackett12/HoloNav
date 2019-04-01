@@ -16,6 +16,7 @@ public class API : MonoBehaviour
     public Text responseText;
     public GameObject locationProvider;
     public GameObject mapping;
+    public GameObject canvas;
 
     public void request()
     {
@@ -47,6 +48,8 @@ public class API : MonoBehaviour
             Debug.Log("Geometry: " + route.routes[0].geometry);
 
             mapping.GetComponent<Mapping>().Initialise(route.routes[0].geometry);
+            mapping.GetComponent<HUDParser>().Initialise(route.routes[0]);
+            canvas.gameObject.SetActive(true);
         }
     }
 

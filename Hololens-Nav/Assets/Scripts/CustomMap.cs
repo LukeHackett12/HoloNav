@@ -127,7 +127,7 @@ namespace Assets.Scripts
 
         public Texture GetTileTex(int x, int y, float zoom)
         {
-            string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, x, y, "png", mapStyle, token);
+            string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}.{4}?&access_token={5}", mapType, zoom, x, y, "png", token);
             Debug.Log("url " + uri);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
