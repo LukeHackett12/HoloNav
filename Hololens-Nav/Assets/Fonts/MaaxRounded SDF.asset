@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MaaxRounded SDF
   m_EditorClassIdentifier: 
   hashCode: 559641511
-  material: {fileID: 21668058225020768}
+  material: {fileID: 21487356919206838}
   materialHashCode: -1276957364
   fontAssetType: 1
   m_fontInfo:
@@ -38,7 +38,7 @@ MonoBehaviour:
     Padding: 5
     AtlasWidth: 512
     AtlasHeight: 512
-  atlas: {fileID: 28652324607624712}
+  atlas: {fileID: 28866883204420342}
   m_glyphInfoList:
   - id: 32
     x: 6
@@ -923,7 +923,7 @@ MonoBehaviour:
   fallbackFontAssets: []
   m_CreationSettings:
     sourceFontFileName: 
-    sourceFontFileGUID: f4fce8207b2c406458badd64834c3a18
+    sourceFontFileGUID: 4bef0563a259c7348a7d799c319d1563
     pointSizeSamplingMode: 0
     pointSize: 71
     padding: 5
@@ -965,7 +965,7 @@ MonoBehaviour:
   boldSpacing: 7
   italicStyle: 35
   tabSize: 10
---- !u!21 &21668058225020768
+--- !u!21 &21487356919206838
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -997,7 +997,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 28652324607624712}
+        m_Texture: {fileID: 28866883204420342}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OutlineTex:
@@ -1065,7 +1065,7 @@ Material:
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
---- !u!28 &28652324607624712
+--- !u!28 &28866883204420342
 Texture2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
