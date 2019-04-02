@@ -25,7 +25,7 @@ public class API : MonoBehaviour
 
     public void request()
     {
-        string loc = locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x + "," + locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y;
+        string loc = locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y + "," + locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x;
         string dirURL = URL + loc + ";" + destination + "?" + "geometries=polyline&steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY;
         Debug.Log(dirURL);
 
