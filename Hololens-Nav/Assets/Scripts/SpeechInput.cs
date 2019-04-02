@@ -130,8 +130,8 @@ public class SpeechInput : MonoBehaviour
 				Say("Sorry, I cannot find a route to " + userInputStr + ", please choose another destination.");
 			}
 		}
-		for(int i=0; i<userInputArr.length; i++){
-			userInputArr[i]=null;
+		foreach(string s in userInputArr){
+			s=null;
 		}
 		PhraseRecognitionSystem.Restart();
     }
