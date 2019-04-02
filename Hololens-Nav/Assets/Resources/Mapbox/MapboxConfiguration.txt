@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 {"AccessToken":"pk.eyJ1IjoiZHVnZ2FuYWEiLCJhIjoiY2pzcDB4dDV1MHB4bTQ1bW1ha3A1a2V0ZiJ9.U_SQ8N9nyzPEn2PZOvkEeg","MemoryCacheSize":500,"FileCacheSize":25000,"DefaultTimeout":30,"AutoRefreshCache":false}
-=======
-{"AccessToken":"pk.eyJ1IjoiZmllbGRzYWwiLCJhIjoiY2pzbXlwNGF4MDY0ZDQ5cGVrN2MwcG45dCJ9.MYsalppgAht84dBaUjW-zw","MemoryCacheSize":500,"FileCacheSize":25000,"DefaultTimeout":30,"AutoRefreshCache":false}
->>>>>>> master

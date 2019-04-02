@@ -54,9 +54,10 @@ public class SpeechInput : MonoBehaviour
         ServicePointManager.ServerCertificateValidationCallback = remoteCertificateValidationCallback;
 
         token = getToken();
-        Debug.Log("TTS: Received access token");
+        Debug.Log("TTS: Received access token " + token);
 
         Say("Hello. Say destination followed by your desired destination to begin.");
+
         userInputArr = new string[20];
         userInputLength = 0;
         //Initialize Dictation Recognizer to listen for destination input
@@ -224,18 +225,45 @@ public class SpeechInput : MonoBehaviour
         }
     }
 
-
     private string getToken()
     {
-        WebRequest request = WebRequest.Create("https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issueToken");
-        request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-        request.Method = "POST";
-        request.ContentLength = 0;
+        string token = null;
+        try
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issueToken");
+            request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+            request.Method = "POST";
+            request.ContentLength = 0;
 
-        WebResponse response = request.GetResponse();
-        System.IO.Stream responseStream = response.GetResponseStream();
-        System.IO.StreamReader reader = new System.IO.StreamReader(responseStream);
-        return reader.ReadToEnd();
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            Stream responseStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(responseStream);
+            token =  reader.ReadToEnd();
+        }
+        catch
+        {
+            while(token == null)
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issueToken");
+                    request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+                    request.Method = "POST";
+                    request.ContentLength = 0;
+
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    Stream responseStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(responseStream);
+                    token = reader.ReadToEnd();
+                }
+                catch
+                {
+                    token = null;
+                }
+            }
+        }
+
+        return token;
     }
 
     private bool remoteCertificateValidationCallback(System.Object sender,
