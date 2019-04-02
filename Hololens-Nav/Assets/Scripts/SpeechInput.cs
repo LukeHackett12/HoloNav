@@ -17,8 +17,6 @@ using UnityEngine.UI;
 using UnityEngine.Windows.Speech;
 using UnityEngine.Networking;
 
-
-
 // NOTE: Ensure that Windows 10 Settings -> Privacy -> Speech, inking and
 // typing has the setting enabled to support speech recognition
 
@@ -27,7 +25,6 @@ public class SpeechInput : MonoBehaviour
     DictationRecognizer dictationRecognizer;
     KeywordRecognizer kr;
     Dictionary<string, System.Action> keywords;
-
 
     string[] userInputArr;
     int userInputLength;
@@ -39,7 +36,7 @@ public class SpeechInput : MonoBehaviour
     public API router;
     private string token;
     private string ssml;
-
+	const int DICTATION_SILENCE_TIMEOUT = 1;
 
 
     void Start()
@@ -62,7 +59,7 @@ public class SpeechInput : MonoBehaviour
         userInputLength = 0;
         //Initialize Dictation Recognizer to listen for destination input
         dictationRecognizer = new DictationRecognizer();
-        dictationRecognizer.AutoSilenceTimeoutSeconds = 2;
+        dictationRecognizer.AutoSilenceTimeoutSeconds = DICTATION_SILENCE_TIMEOUT;
 
 
         //Event handlers for Dictation Recogizer
@@ -132,6 +129,9 @@ public class SpeechInput : MonoBehaviour
 			{
 				Say("Sorry, I cannot find a route to " + userInputStr + ", please choose another destination.");
 			}
+		}
+		for(int i=0; i<userInputArr.length; i++){
+			userInputArr[i]=null;
 		}
 		PhraseRecognitionSystem.Restart();
     }
