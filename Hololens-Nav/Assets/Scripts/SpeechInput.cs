@@ -38,7 +38,11 @@ public class SpeechInput : MonoBehaviour
     private string ssml;
 	const int DICTATION_SILENCE_TIMEOUT = 1;
 
-
+	/* Start function
+	Initializes the reference to API.cs, the audio source, the keyword recognzer and
+	the dictation recognizer. Starts the keyword recognizer to listen out for specific
+	user input.
+	*/
     void Start()
     {
 		Debug.Log("Speech input debug messages will begin with SI.");
@@ -77,7 +81,12 @@ public class SpeechInput : MonoBehaviour
     }
 
 
-    //Add preset keywords to Dictionary
+    /* setKeyWords function
+	Adds predefined keywords to the dictionary of the keyword recognizer.
+	The recognizer will deem a keyword recognized if it hears any of the
+	phrases specified below. Also specifies what happens once any of the
+	specified keywords are said.
+	*/
     public void setKeyWords()
     {
         keywords.Add("Destination", () =>
@@ -92,12 +101,21 @@ public class SpeechInput : MonoBehaviour
             Debug.Log("SI: Changing Route");
             dictationRecognizer.Start();
         });
-
+		
+		keywords.Add("Find Route", () =>
+        {
+            PhraseRecognitionSystem.Shutdown();
+            Debug.Log("SI: Finding Route");
+            dictationRecognizer.Start();
+        });
     }
 
-    //Input speech handler
-    //Called when specific keyword is interpreted
-    //TODO: Configure appropriate confidence level threshold
+    /* Dictation result event handler
+	Called when the dictation recognizer returns a string from the voice input.
+	Adds the string to an array and increases the index of the array. This array
+	will contain all of the words that the user has spoken before timeout and needs
+	to be converted to a single string.
+	*/
     public void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
         Debug.Log("SI: Heard " + text);
@@ -105,8 +123,14 @@ public class SpeechInput : MonoBehaviour
         userInputLength++;
     }
 
-
-    //Handles the end of speech input
+	/* Dictation complete event handler
+	Converts the user input array to a single string. If no user input was recognized,
+	uses TTS to tell the user that no input was recognized. Otherwise, tells the user
+	what was heard and tries to convert it to a location. If conversion was successful
+	then the user will be guided to the route, otherwise use TTS to inform the user that
+	a route could not be found. Restarts the keyword recognizer whether a route was found
+	or not incase the user wants to change their location.
+	*/
     public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
         userInputLength = 0;
@@ -136,7 +160,10 @@ public class SpeechInput : MonoBehaviour
 		PhraseRecognitionSystem.Restart();
     }
 	
-	// Returns whether the string contains only spaces
+	/* emptyInput function
+	Returns true if the passed string s is empty or null.
+	@Parameters: string s; the string to check
+	*/
 	private bool emptyInput(string s) 
 	{ 
 		if(s == null)
@@ -149,7 +176,10 @@ public class SpeechInput : MonoBehaviour
 		return true; 
 	}
 
-    //Calls correct action when paired keyword is spoken
+	/* Phrase recognized event handler.
+	Called when a phrase has been recognized by the keyword recognizer. Invokes
+	the keyword recognizer specified in setKeyWords()
+	*/
     public void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
         System.Action keywordAction;
@@ -160,6 +190,12 @@ public class SpeechInput : MonoBehaviour
     }
 
 
+	/* Say function
+	Invokes functionality of the Azure Cognitive Services TTS API. Creates a web 
+	web request including the string to be said. On response from the API, calls 
+	the IEnumerator to play the output from the speakers.
+	@Parameters: string text; The text to say
+	*/
     public void Say(string text)
     {
 		Debug.Log("TTS: Called Say() with parameter " + text);
@@ -206,6 +242,11 @@ public class SpeechInput : MonoBehaviour
 
     }
 
+	/* Say IEnumerator
+	Waits for a return from the web request of the method above. Gets the
+	WAV file from the response and attaches it to the AudioSource in Unity.
+	Plays the clip assigned to the audio source/
+	*/
     private IEnumerator say(string path)
     {
         WWW w = new WWW(path);
@@ -225,6 +266,9 @@ public class SpeechInput : MonoBehaviour
         }
     }
 
+	/* getToken function
+	Get and return the token for the Azure Cognitive Services TTS API.
+	*/
     private string getToken()
     {
         string token = null;

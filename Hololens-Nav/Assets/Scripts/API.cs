@@ -66,6 +66,16 @@ public class API : MonoBehaviour
         destination = newText;
     }
 
+	/* PlaceNameToCoords function.
+	Takes the name or address of a location and calls the Mapbox Geocoder API to find out
+	information about the most relevant location to that placename. Looks for the location
+	of the coordinates in the returned Json and parses them out as a string. Stores these
+	coordinates into the global "destination" string. Calls request which converts these 
+	coordinates to a route.
+	Throws an exception if the Geocoder fails to convert the placename to a location, which
+	is caught by the calling function in API.cs.
+	@Parameters: string placeName; The placename or address of the desired destination
+	*/
     public void PlaceNameToCoords(string placeName)
 	{
 		Debug.Log("GC: Requesting coordinates of " + placeName);
