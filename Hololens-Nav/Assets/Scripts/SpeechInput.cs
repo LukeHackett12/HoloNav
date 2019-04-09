@@ -29,7 +29,7 @@ public class SpeechInput : MonoBehaviour
     string[] userInputArr;
     int userInputLength;
     string userInputStr;
-    public string SubscriptionKey = "9da174076787461dad1cee019f6fb3e7";
+    public string SubscriptionKey = "d72eebd1cc8d444ab1e4dc02755b4f5b";
     public string SSMLMarkup = "<speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='{0}' name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>{1}</voice></speak>";
     public Genders Gender = Genders.Female;
     public AudioSource audioSource;
