@@ -34,17 +34,22 @@ namespace Assets.Scripts
         public GameObject secondGo;
 
         private int lastDist;
+        private bool initialised;
 
-        void Awake()
+        public void Awake()
+        {
+            initialised = false;
+            pin.GetComponent<ZoomMovement>().enabled = false;
+        }
+
+        public void Initialise(String geometry)
         {
             edges = new List<Edge>();
             map = new CustomMap();
             map.planes = planes;
             lastDist = -1;
-        }
 
-        void Start()
-        {
+            polyline = geometry;
             List<Vector2d> meterPoints = ConvertLatLongToMeters(polyline);
             Vector2[] vectors = new Vector2[meterPoints.Count];
 
@@ -62,27 +67,30 @@ namespace Assets.Scripts
             HashSet<Tile> tiles = map.GetTextures(nodes, mapZoom);
             map.PlaceTextures(tiles);
 
-            pin.GetComponent<ZoomMovement>().enabled = false;
             map.placeLocationPin(polyline, pin, mapZoom);
             pin.GetComponent<ZoomMovement>().calcScale(PolylineUtils.Decode(polyline).First(), mapZoom);
             pin.GetComponent<ZoomMovement>().loc = pin.transform.localPosition;
             pin.GetComponent<ZoomMovement>().enabled = true;
+
+            initialised = true;
         }
 
         void Update()
         {
-            int dist = getClosestEdge(edges);
-            Debug.Log(dist);
-            if (dist != lastDist)
+            if (initialised)
             {
-                List<Edge> first = edges.Take(dist).ToList();
-                List<Edge> middle = edges.Skip(dist).Take(1).ToList();
-                List<Edge> second = edges.Skip(dist).ToList();
-                firstGo = drawEdges(firstGo, first, startColor, startColor);
-                currentGo = drawEdges(currentGo, middle, endColor, startColor);
-                secondGo = drawEdges(secondGo, second, endColor, endColor);
+                int dist = getClosestEdge(edges);
+                if (dist != lastDist)
+                {
+                    List<Edge> first = edges.Take(dist).ToList();
+                    List<Edge> middle = edges.Skip(dist).Take(1).ToList();
+                    List<Edge> second = edges.Skip(dist).ToList();
+                    firstGo = drawEdges(firstGo, first, startColor, startColor);
+                    currentGo = drawEdges(currentGo, middle, endColor, startColor);
+                    secondGo = drawEdges(secondGo, second, endColor, endColor);
 
-                lastDist = dist;
+                    lastDist = dist;
+                }
             }
         }
 

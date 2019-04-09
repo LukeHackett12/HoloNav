@@ -19,9 +19,6 @@ namespace Mapbox.Unity.Location
 	/// </summary>
 	public class DeviceLocationProvider : AbstractLocationProvider
 	{
-
-        public GameObject test;
-
 		/// <summary>
 		/// Using higher value like 500 usually does not require to turn GPS chip on and thus saves battery power. 
 		/// Values like 5-10 could be used for getting best accuracy.
@@ -183,7 +180,7 @@ namespace Mapbox.Unity.Location
 			_locationService.Start(_desiredAccuracyInMeters, _updateDistanceInMeters);
 			Input.compass.enabled = true;
 
-            int maxWait = 20;
+			int maxWait = 20;
 			while (_locationService.status == LocationServiceStatus.Initializing && maxWait > 0)
 			{
 				yield return _wait1sec;
@@ -336,11 +333,6 @@ namespace Mapbox.Unity.Location
 						_currentLocation.IsUserHeadingUpdated = true;
 					}
 				}
-
-				_currentLocation.TimestampDevice = UnixTimestampUtils.To(DateTime.UtcNow);
-                test.transform.rotation = Quaternion.Euler(0, -Input.compass.trueHeading, 0);
-                Debug.Log("True heading: " + Input.compass.trueHeading);
-                Debug.Log("Raw vector: " + Input.compass.rawVector);
 
                 SendLocation(_currentLocation);
 

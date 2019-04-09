@@ -49,7 +49,7 @@ namespace Mapbox.MapMatching
 		Simplified,
 		/// <summary>No overview geometry </summary>
 		[Description("false")]
-		None
+        None
 	}
 
 
@@ -73,7 +73,7 @@ namespace Mapbox.MapMatching
 	/// </summary>
 	public enum InstructionLanguages
 	{
-		[Description("de")]
+		[System.ComponentModel.Description("de")]
 		German,
 		[Description("en")]
 		English,

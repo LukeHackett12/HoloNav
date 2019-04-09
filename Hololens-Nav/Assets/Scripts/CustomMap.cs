@@ -16,7 +16,7 @@ namespace Assets.Scripts
     {
         public GameObject planes;
 
-        string mapType = "mapbox.mapbox-traffic-v1";
+        string mapType = "mapbox.satellite";
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
@@ -127,7 +127,7 @@ namespace Assets.Scripts
 
         public Texture GetTileTex(int x, int y, float zoom)
         {
-            string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}@2x.{4}?style={5}@00&access_token={6}", mapType, zoom, x, y, "png", mapStyle, token);
+            string uri = String.Format("http://api.mapbox.com/v4/" + "{0}/{1}/{2}/{3}.{4}?&access_token={5}", mapType, zoom, x, y, "png", token);
             Debug.Log("url " + uri);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
