@@ -17,16 +17,29 @@ public class API : MonoBehaviour
     private const string URL = "https://api.mapbox.com/directions/v5/mapbox/walking/";
     private const string API_KEY = "pk.eyJ1IjoiamVuZ2VsczAzIiwiYSI6ImNqaXZ1aDVjODE0ZDQzam56dHJhc3dmNG8ifQ.2jBiS1t1o8uY4KuSbBMOtg";
 	private const string GEOCODER_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
-	private string destination;
+	public string destination;
     public Text responseText;
     public GameObject locationProvider;
     public GameObject mapping;
     public GameObject canvas;
 
+    public Boolean test;
+    public string testLoc;
+
     public void request()
     {
-        string loc = locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y + "," + locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x;
-        string dirURL = URL + loc + ";" + destination + "?" + "geometries=polyline&steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY;
+        string loc;
+        if (!test)
+        {
+            loc = locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.y + "," + locationProvider.GetComponent<LocationProviderFactory>().DefaultLocationProvider.CurrentLocation.LatitudeLongitude.x;
+            test = false;
+        }
+        else
+        {
+            loc = testLoc;
+        }
+
+        string dirURL = URL + "-6.5207408,53.511152" + ";" + destination + "?" + "geometries=polyline&steps=true&voice_instructions=true&banner_instructions=true&voice_units=metric" + "&access_token=" + API_KEY;
         Debug.Log(dirURL);
 
         HttpWebRequest req = (HttpWebRequest)WebRequest.Create(dirURL);
@@ -94,10 +107,17 @@ public class API : MonoBehaviour
             string secondString = "]},\"context";
             int substringStart = geocodeJson.IndexOf(firstString) + firstString.Length;
             int substringEnd = geocodeJson.IndexOf(secondString);
-            Debug.Log("GC: Substring starts at index " + substringStart + ", ends at index " + substringEnd);
-            string coords = geocodeJson.Substring(substringStart, substringEnd - substringStart);
-            Debug.Log("GC: Parsed out " + coords + " as coordinates");
-            destination = coords;
+            if (substringEnd != -1)
+            {
+                Debug.Log("GC: Substring starts at index " + substringStart + ", ends at index " + substringEnd);
+                string coords = geocodeJson.Substring(substringStart, substringEnd - substringStart);
+                Debug.Log("GC: Parsed out " + coords + " as coordinates");
+                destination = coords;
+            }
+            else
+            {
+                throw new KeyNotFoundException("No coords");
+            }
         }
 
         request();

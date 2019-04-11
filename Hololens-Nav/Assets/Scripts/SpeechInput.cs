@@ -26,15 +26,18 @@ public class SpeechInput : MonoBehaviour
     KeywordRecognizer kr;
     Dictionary<string, System.Action> keywords;
 
+    public Boolean test;
+    public string testLoc;
+
     string[] userInputArr;
     int userInputLength;
     string userInputStr;
-    public string SubscriptionKey = "d72eebd1cc8d444ab1e4dc02755b4f5b";
     public string SSMLMarkup = "<speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='{0}' name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>{1}</voice></speak>";
     public Genders Gender = Genders.Female;
     public AudioSource audioSource;
     public API router;
     private string token;
+    private string SubscriptionKey = "d72eebd1cc8d444ab1e4dc02755b4f5b";
     private string ssml;
 	const int DICTATION_SILENCE_TIMEOUT = 1;
 
@@ -81,6 +84,21 @@ public class SpeechInput : MonoBehaviour
     }
 
 
+    void Update()
+    {
+        if (test)
+        {
+            try
+            {
+                router.PlaceNameToCoords(testLoc);
+            } catch (KeyNotFoundException ignore)
+            {
+
+            }
+            test = false;
+        }
+    }
+
     /* setKeyWords function
 	Adds predefined keywords to the dictionary of the keyword recognizer.
 	The recognizer will deem a keyword recognized if it hears any of the
@@ -93,6 +111,22 @@ public class SpeechInput : MonoBehaviour
         {
             PhraseRecognitionSystem.Shutdown();
             dictationRecognizer.Start();
+        });
+
+        keywords.Add("Test", () =>
+        {
+            Say("Testing");
+            try
+            {
+                router.testLoc = "-6.256907,53.343693";
+                router.destination = "-6.26583,53.3425";
+                router.test = true;
+                router.request();
+                router.test = false;
+            } catch
+            {
+                Say("Failed");
+            }
         });
 
         keywords.Add("Change Route", () =>
@@ -135,7 +169,7 @@ public class SpeechInput : MonoBehaviour
     {
         userInputLength = 0;
         Debug.Log("SI: Dictation complete, stopped listening");
-        userInputStr = string.Join(" ", userInputArr);
+        userInputStr = string.Join(" ", userInputArr).TrimEnd();
         Debug.Log("SI: You said " + userInputStr);
 		if(emptyInput(userInputStr))
 		{

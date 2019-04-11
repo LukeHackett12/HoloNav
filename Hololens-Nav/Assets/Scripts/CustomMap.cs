@@ -20,7 +20,7 @@ namespace Assets.Scripts
         string mapStyle = "mapbox://styles/fieldsal/cjsug81dl6lw11fs7tr8msn0u";
         string token = "pk.eyJ1IjoibGhhY2tldHR0Y2QiLCJhIjoiY2pzbHl3eTlsMXUxcDRhbDUzYTF3cmVrZyJ9.mu7oqWVq5JNh41ovI_t8EA";
 
-        public HashSet<Tile> GetTextures(Node[] Nodes, float zoom)
+        public void GetTextures(Node[] Nodes, float zoom)
         {
             ArrayList textures = new ArrayList();
             ArrayList usedCoords = new ArrayList();
@@ -81,7 +81,7 @@ namespace Assets.Scripts
                 usedCoords.Add(coords);
             }
 
-            return tiles;
+            PlaceTextures(tiles);
         }
         
 
