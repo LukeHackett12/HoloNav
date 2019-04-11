@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -63,9 +64,8 @@ namespace Assets.Scripts
             Node[] nodes = nodes = generateNodes(vectors, PolylineUtils.Decode(polyline));
 
             generateEdges(nodes);
-            
-            HashSet<Tile> tiles = map.GetTextures(nodes, mapZoom);
-            map.PlaceTextures(tiles);
+
+            map.GetTextures(nodes, mapZoom);
 
             map.placeLocationPin(polyline, pin, mapZoom);
             pin.GetComponent<ZoomMovement>().calcScale(PolylineUtils.Decode(polyline).First(), mapZoom);
