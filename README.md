@@ -1,4 +1,4 @@
-# HoloLens Nav
+# HoloNav
 _Developed by Luke Hackett, Jack Engels, Jack Gilbride, Imalia Gonzalezova, Aaron Duggan, Alex Fields & Daniel Connaughton_
 
 ## Developer Requirements
