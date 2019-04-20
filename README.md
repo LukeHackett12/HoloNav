@@ -1,6 +1,8 @@
 # HoloNav
 _Developed by Luke Hackett, Jack Engels, Jack Gilbride, Imalia Gonzalezova, Aaron Duggan, Alex Fields & Daniel Connaughton_
 
+HoloNav is a proof of concept mapping application built in Unity for the Hololens. It builds a HUD and route that is simple to follow and uses interactive voice commands for input.
+
 ## Developer Requirements
 
 * 64 Bit Windows 10 Pro, Education or Enterprise
